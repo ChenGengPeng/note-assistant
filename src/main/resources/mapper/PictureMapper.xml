@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sziit.noteassistant.mapper.PictureMapper">
+
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.sziit.noteassistant.pojo.entity.Picture">
+        <id column="p_id" property="id" />
+        <result column="p_url" property="url" />
+        <result column="p_sort" property="sort" />
+        <result column="n_id" property="nId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        p_id, p_url, p_sort, n_id
+    </sql>
+
+</mapper>

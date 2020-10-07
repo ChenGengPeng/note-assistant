@@ -1,0 +1,67 @@
+qiniuyun:
+  ACCESS_KEY: bUppOaCX9aNaaehuZ0QdAG-cpci9B51jXT6XgMyr
+  SECRET_KEY: Mzm26CsGtTy-2-S0sNnn-xtput6hkB3mr9nBI6qI
+  BUCKET: notes-assistant
+  DOMAIN: http://qhg4lamoz.hn-bkt.clouddn.com/
+  REGIONCODE: region2
+  KEY: null
+server:
+  servlet:
+    # 请求数据转码UTF8
+    encoding:
+      enabled: true
+      charset: UTF-8
+      force: true
+spring:
+  mvc:
+    # 打印 web-log
+    log-request-details: true
+
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource  # 数据源类型：HikariCP
+    hikari:
+      connection-timeout: 30000 # 等待连接池分配连接的最大时长（毫秒），超过这个时长还没可用的连接则发生SQL异常
+      minimum-idle: 10 # 最小连接数
+      maximum-pool-size: 20 # 最大连接数
+      auto-commit: true # 自动提交
+      idle-timeout: 600000 # 连接超时的最大时长（毫秒），超时则被释放（retired），默认:10分钟
+      pool-name: DateSourceHikariCP # 连接池名字
+      max-lifetime: 1800000 # 连接的生命时长（毫秒），超时而且没被使用则被释放（retired），默认:30分钟
+      connection-test-query: SELECT 1
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/note_assistant?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf8&autoReconnect=true&allowMultiQueries=true
+    username: root
+    password: 3412410
+  devtools:
+    restart:
+      #热部署生效
+      enabled: true
+#        设置重启的目录
+      additional-paths: src/main/java
+      #classpath目录下的WEB-INF文件夹内容修改不重启
+      exclude: WEB-INF/**
+  security:
+    basic:
+      path: /swagger-ui.html
+      enabled: true
+    user:
+      name: admin
+      password: 3412410
+mybatis-plus:
+  #  检查XML映射文件
+  check-config-location: true
+  configuration:
+    #    驼峰命名
+    map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      #      设置逻辑删除
+      logic-delete-value: 0
+      logic-not-delete-value: 1
+  mapper-locations: classpath*:mapper/**/*Mapper.xml
+logging:
+  level:
+    web: debug
+    org:
+      example:
+        security: debug

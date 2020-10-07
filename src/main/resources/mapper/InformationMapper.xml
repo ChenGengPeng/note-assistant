@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sziit.noteassistant.mapper.InformationMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.sziit.noteassistant.pojo.entity.Information">
+        <id column="i_id" property="id" />
+        <result column="phone" property="phone" />
+        <result column="profile" property="profile" />
+        <result column="country" property="country" />
+        <result column="province" property="province" />
+        <result column="city" property="city" />
+        <result column="uPhoto" property="uPhoto" />
+        <result column="uId" property="uId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        i_id,phone,profile,country,province,city,photo_url,u_id
+    </sql>
+
+</mapper>
