@@ -4,19 +4,63 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.sziit.noteassistant.pojo.entity.Information">
-        <id column="i_id" property="id" />
+        <id column="i_id" property="iid" />
         <result column="phone" property="phone" />
         <result column="profile" property="profile" />
         <result column="country" property="country" />
         <result column="province" property="province" />
         <result column="city" property="city" />
         <result column="uPhoto" property="uPhoto" />
-        <result column="uId" property="uId" />
+        <result column="u_Id" property="uI1d" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         i_id,phone,profile,country,province,city,photo_url,u_id
     </sql>
+    <sql id="find_infor_where">
+        <if test="iid != null">
+            and i_id = #{iid}
+        </if>
+        <if test="uId!= null">
+            and u_Id = #{uId}
+        </if>
+    </sql>
 
+    <select id="findOne" resultMap="BaseResultMap">
+        select * from information 
+        <where>
+            <include refid="find_infor_where"></include>
+        </where>
+    </select>
+    
+    <insert id="add_infor" useGeneratedKeys="true" keyProperty="iid">
+        insert into information(phone,profile,country,province,city,photo_url,u_id)
+        values (#{phone},#{profile},#{country},#{province},#{city},#{uPhoto},#{uId})
+    </insert>
+    
+    <update id="updateInfor">
+        update information
+        <set>
+            <if test="phone != null">
+                phone = #{phone},
+            </if>
+            <if test="profile != null">
+                profile = #{profile},
+            </if>
+            <if test="country != null">
+                country = #{country},
+            </if>
+            <if test="province != null">
+                province = #{province},
+            </if>
+            <if test="city != null">
+                city = #{city},
+            </if>
+            <if test="uPhoto != null">
+                photo_url = #{uPhoto},
+            </if>
+        </set>
+        where information.u_id = #{uId}
+    </update>
 </mapper>

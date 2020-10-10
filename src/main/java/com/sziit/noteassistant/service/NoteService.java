@@ -1,7 +1,9 @@
 package com.sziit.noteassistant.service;
 
+
 import com.sziit.noteassistant.pojo.entity.Note;
 
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +15,7 @@ import com.sziit.noteassistant.pojo.entity.Note;
  */
 public interface NoteService  {
 
+    public List<Note> selectNotesByUid(Integer uId);
+
+    public void addNote(Note note);
 }

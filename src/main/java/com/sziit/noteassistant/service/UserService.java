@@ -11,7 +11,7 @@ import com.sziit.noteassistant.pojo.entity.User;
  * @since 2020-10-04
  */
 public interface UserService {
-   public User add(User user);
+   public void add(User user);
 
    public User findById(Integer uid);
 
@@ -19,7 +19,7 @@ public interface UserService {
 
    public User findByName(String username);
 
-   public void changePassword(String username,String oldPassword, String newPassword);
+   public void changePassword(Integer id,String newPassword);
 
-   public boolean comparePassword(User user,User userInDataBase);
+   public boolean comparePassword(String newPassword,String oldPassword);
 }

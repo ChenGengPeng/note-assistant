@@ -1,6 +1,8 @@
 package com.sziit.noteassistant.pojo.entity;
 
 import java.io.Serializable;
+import java.util.List;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -33,6 +35,8 @@ public class User {
 
     @ApiModelProperty(value = "用户密码")
     private String password;
+
+
 
     protected Serializable pkVal() {
         return this.uid;

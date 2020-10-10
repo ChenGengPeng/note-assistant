@@ -11,9 +11,24 @@
         <result column="u_id" property="uId" />
     </resultMap>
 
+    <!--<resultMap id="UserNotes" type="com.sziit.noteassistant.pojo.UserNotes">
+        <id column="u_id" property="uid" />
+        <result column="username" property="username" />
+        <collection property="notes" column="u_id" select="selectNoteByUid" ofType="com.sziit.noteassistant.pojo.entity.Note"></collection>
+    </resultMap>-->
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         n_id, n_name, createtime, u_id
     </sql>
+
+    <select id="selectNotesByUid" resultType="com.sziit.noteassistant.pojo.entity.Note">
+        select n.n_id,n.n_name,n.createtime from note n where n.u_id = #{uId}
+    </select>
+
+    <insert id="addNote" useGeneratedKeys="true" keyProperty="nId">
+        insert into note(n_name,createtime,u_id)
+        values (#{nId},#{nName},#{createtime},#{uId})
+    </insert>
+
 
 </mapper>

@@ -7,6 +7,7 @@ import com.sziit.noteassistant.pojo.entity.Audio;
 import com.sziit.noteassistant.pojo.entity.Information;
 import com.sziit.noteassistant.service.AudioService;
 import com.sziit.noteassistant.service.InformationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -18,6 +19,28 @@ import org.springframework.stereotype.Service;
  * @since 2020-10-04
  */
 @Service
-public class InformationServiceImpl {
+public class InformationServiceImpl implements InformationService {
 
+    @Autowired
+    private InformationMapper informationMapper;
+    @Override
+    public void addInform(Information information) {
+        informationMapper.add_infor(information);
+    }
+
+    @Override
+    public Information findById(Integer iid) {
+       return informationMapper.getById(iid);
+    }
+
+    @Override
+    public Information findByUid(Integer uid) {
+        return informationMapper.getByUid(uid);
+    }
+
+    @Override
+    public boolean updateInform(Information information) {
+        informationMapper.updateInfor(information);
+        return true;
+    }
 }

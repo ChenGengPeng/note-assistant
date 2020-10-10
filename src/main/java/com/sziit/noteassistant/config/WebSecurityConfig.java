@@ -27,7 +27,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
         http.csrf().disable();
 
         http.authorizeRequests()
-            .antMatchers("/", "/*.html", "/favicon.ico", "/css/**", "/js/**", "/fonts/**", "/img/**",
+            .antMatchers("/**", "/*.html", "/favicon.ico", "/css/**", "/js/**", "/fonts/**", "/img/**",
                 "/v2/api-docs/**", "/swagger-resources/**", "/webjars/**", "/pages/**", "/druid/**","/user/login","/user/register",
                 "/statics/**")
                 .permitAll().anyRequest().authenticated()
