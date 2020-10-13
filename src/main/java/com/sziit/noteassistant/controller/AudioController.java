@@ -45,7 +45,7 @@ public class AudioController {
     public Object addAudio(@RequestBody Audio audio) {
         JSONObject jsonObject = new JSONObject();
         audioService.addAudio(audio);
-        Audio audioInDB = audioService.selectAudioByUrl(audio.getAUrl());
+        Audio audioInDB = audioService.selectAudioOne(audio);
         jsonObject.put("audio",audioInDB);
         return jsonObject;
     }

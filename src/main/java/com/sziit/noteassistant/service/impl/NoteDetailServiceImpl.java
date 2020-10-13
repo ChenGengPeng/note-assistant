@@ -47,17 +47,19 @@ public class NoteDetailServiceImpl implements NoteDetailService {
             List<Audio> audios = new ArrayList<Audio>();
             for (int i = 0; i < noteDetail.getAudios().size(); i++) {
                 audioMapper.addAudio(noteDetail.getAudios().get(i));
-                audios.add(audioMapper.selectAudioByUrl(noteDetail.getAudios().get(i).getAUrl()));
+                audios.add(audioMapper.selectAudioOne(noteDetail.getAudios().get(i)));
             }
             noteDetailInDB.setAudios(audios);
-        }else if (noteDetail.getPictures()!=null && !noteDetail.getPictures().isEmpty()){
+        }
+        if (noteDetail.getPictures()!=null && !noteDetail.getPictures().isEmpty()){
             List<Picture> pictures = new ArrayList<Picture>();
             for (int i = 0; i < noteDetail.getPictures().size(); i++) {
                 pictureMapper.addPicture(noteDetail.getPictures().get(i));
                 pictures.add(pictureMapper.selectPictureByUrl(noteDetail.getPictures().get(i).getPUrl()));
             }
             noteDetailInDB.setPictures(pictures);
-        }else if (noteDetail.getTexts()!=null && !noteDetail.getTexts().isEmpty()){
+        }
+        if (noteDetail.getTexts()!=null && !noteDetail.getTexts().isEmpty()){
             List<Text> texts = new ArrayList<Text>();
             for (int i = 0; i < noteDetail.getTexts().size() ; i++) {
                 textMapper.addText(noteDetail.getTexts().get(i));
@@ -81,7 +83,8 @@ public class NoteDetailServiceImpl implements NoteDetailService {
                 throw new RuntimeException("音频删除失败");
             }
             noteDetailInDB.setAudios(audioMapper.selectAudiosByNid(noteDetail.getAudios().get(0).getNId()));
-        }else if (noteDetail.getPictures()!=null && !noteDetail.getPictures().isEmpty()){
+        }
+        if (noteDetail.getPictures()!=null && !noteDetail.getPictures().isEmpty()){
             int sum = 0;
             for (int i = 0; i < noteDetail.getPictures().size(); i++) {
                 int result = pictureMapper.deletePicture(noteDetail.getPictures().get(i).getPId());
@@ -91,7 +94,8 @@ public class NoteDetailServiceImpl implements NoteDetailService {
                 throw new RuntimeException("图片删除失败");
             }
             noteDetailInDB.setPictures(pictureMapper.selectPictureByNid(noteDetail.getPictures().get(0).getNId()));
-        }else if (noteDetail.getTexts()!=null && !noteDetail.getTexts().isEmpty()){
+        }
+        if (noteDetail.getTexts()!=null && !noteDetail.getTexts().isEmpty()){
             int sum = 0;
             for (int i = 0; i < noteDetail.getTexts().size(); i++) {
                 int result = textMapper.deleteText(noteDetail.getTexts().get(i).getTId());

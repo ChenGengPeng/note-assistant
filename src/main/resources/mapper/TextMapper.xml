@@ -19,16 +19,13 @@
         <if test="sort != null">
             and sort = #{sort}
         </if>
-        <if test="text != null">
-            and text = #{text}
-        </if>
         <if test="nId != null">
             and n_id = #{nId}
         </if>
     </sql>
 
     <select id="selectTextByNid" resultType="com.sziit.noteassistant.pojo.entity.Text">
-        select t.t_id, t.sort, t.text from text t where t.n_id = #{nId}
+        select t.t_id, t.sort, t.text,t.n_id from text t where t.n_id = #{nId}
     </select>
 
     <insert id="addText">
@@ -36,7 +33,7 @@
     </insert>
     
     <select id="selectOne" resultMap="BaseResultMap">
-        select t.t_id,t.sort,t.text,t.n_id from text
+        select t.t_id,t.sort,t.text,t.n_id from text t
         <where>
             <include refid="find_text_where"></include>
         </where>
@@ -49,9 +46,12 @@
                 text.sort = #{sort},
             </if>
             <if test="text != null">
-                text.text = #{aText},
+                text.text = #{text},
             </if>
         </set>
-        where text.n_id = #{nId}
+        where text.t_id = #{tId}
     </update>
+    <select id="selectTextByTid" resultMap="BaseResultMap">
+        select * from text where t_id = #{tId}
+    </select>
 </mapper>

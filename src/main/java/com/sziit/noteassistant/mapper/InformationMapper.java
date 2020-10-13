@@ -20,9 +20,9 @@ public interface InformationMapper {
     Information findOne(Information information);
     int add_infor(Information information);
     int updateInfor(Information information);
-    @Select("select * from information where information.i_id = #{iId}" )
+
     Information getById(Integer iId);
-    @Select("select * from information where information.u_id = #{uId}" )
+
     Information getByUid(Integer uId);
     @Delete("delete from information where information.u_id = #{uId}")
     void deletByUid(Integer uId);

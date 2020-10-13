@@ -28,7 +28,7 @@ public class PictureController {
     private PictureService pictureService;
 
     @GetMapping("findPicture")
-    @ApiOperation(value = "查询音频")
+    @ApiOperation(value = "查询图片")
     public Object findPicture(@RequestParam Integer pId) {
         JSONObject jsonObject = new JSONObject();
         Picture pictureInDB = pictureService.selectPictureByPid(pId);
@@ -41,13 +41,13 @@ public class PictureController {
     public Object addPicture(@RequestBody Picture picture) {
         JSONObject jsonObject = new JSONObject();
         pictureService.addPicture(picture);
-        Picture pictureInDB = pictureService.selectPictureByUrl(picture.getPUrl());
-        jsonObject.put("audio",pictureInDB);
+        Picture pictureInDB = pictureService.selectPictureOne(picture);
+        jsonObject.put("picture",pictureInDB);
         return jsonObject;
     }
 
     @DeleteMapping("delPicture")
-    @ApiOperation(value = "删除音频")
+    @ApiOperation(value = "删除图片")
     public Object delPicture(@RequestParam Integer pId) {
         JSONObject jsonObject = new JSONObject();
         pictureService.deletePicture(pId);

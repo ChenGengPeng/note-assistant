@@ -34,8 +34,12 @@
         insert into  audio(a_url,sort,a_text, n_id) values (#{aUrl},#{sort},#{aText},#{nId})
     </insert>
 
+    <select id="selectAudioOne" resultMap="BaseResultMap">
+        select * from audio
+        <where><include refid="find_audio_where"></include></where>
+    </select>
     <select id="selectAudiosByNid" resultType="com.sziit.noteassistant.pojo.entity.Audio">
-        select a.a_id, a.a_url, a.sort,a.a_text from audio a where a.n_id = #{nId}
+        select a.a_id, a.a_url, a.sort,a.a_text ,a.n_id from audio a where a.n_id = #{nId}
     </select>
 
     <update id="updateAudio">
@@ -51,7 +55,7 @@
                 audio.a_text = #{aText},
             </if>
         </set>
-        where audio.n_id = #{nId}
+        where audio.a_id = #{aId}
     </update>
 
     <delete id="deleteAudioOne">
@@ -61,4 +65,7 @@
         </where>
     </delete>
 
+    <select id="selectAudioByAid" resultMap="BaseResultMap">
+        select * from audio where a_id = #{aId}
+    </select>
 </mapper>

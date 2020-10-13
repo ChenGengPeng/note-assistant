@@ -21,7 +21,7 @@ public interface UserMapper{
     int add(User user);
 
     User findOne(User user);
-    @Select("select * from user where user.u_id = #{uId}")
+
     User getById(Integer uId);
 
     User updateUser(User user);

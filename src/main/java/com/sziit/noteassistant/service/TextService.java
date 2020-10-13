@@ -1,5 +1,6 @@
 package com.sziit.noteassistant.service;
 
+import com.sziit.noteassistant.pojo.entity.Picture;
 import com.sziit.noteassistant.pojo.entity.Text;
 
 import java.util.List;
@@ -19,10 +20,13 @@ public interface TextService{
 
     public void addText(Text text);
 
-    public void updateText(Text text);
+    public Text updateText(Text text);
 
     public void deleteText(Integer tId);
 
     public boolean deleteTexts(Integer[] tIds);
 
+    Text selectTextByTid(Integer tId);
+
+    Text selectOne(Text text);
 }

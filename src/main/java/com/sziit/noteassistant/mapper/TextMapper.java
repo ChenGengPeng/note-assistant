@@ -3,6 +3,7 @@ package com.sziit.noteassistant.mapper;
 
 import com.sziit.noteassistant.pojo.entity.Text;
 import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -26,4 +27,6 @@ public interface TextMapper{
     int deleteText(Integer tId);
 
     void updateText(Text text);
+
+    Text selectTextByTid(Integer tId);
 }

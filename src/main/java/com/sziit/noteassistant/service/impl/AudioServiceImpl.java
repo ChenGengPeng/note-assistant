@@ -36,7 +36,7 @@ public class AudioServiceImpl implements AudioService{
     @Override
     public Audio updateAudio(Audio audio) {
         audioMapper.updateAudio(audio);
-        return audioMapper.selectAudioByUrl(audio.getAUrl());
+        return audioMapper.selectAudioOne(audio);
     }
 
     @Override
@@ -60,8 +60,8 @@ public class AudioServiceImpl implements AudioService{
     }
 
     @Override
-    public Audio selectAudioByUrl(String aUrl) {
-        return audioMapper.selectAudioByUrl(aUrl);
+    public Audio selectAudioOne(Audio audio) {
+        return audioMapper.selectAudioOne(audio);
     }
 
 }

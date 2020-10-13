@@ -27,5 +27,5 @@ public interface AudioService  {
 
     public Audio selectAudioByAid(Integer aId);
 
-    Audio selectAudioByUrl(String aUrl);
+    Audio selectAudioOne(Audio audio);
 }

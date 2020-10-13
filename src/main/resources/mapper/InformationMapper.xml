@@ -19,7 +19,7 @@
         i_id,phone,profile,country,province,city,photo_url,u_id
     </sql>
     <sql id="find_infor_where">
-        <if test="iid != null">
+        <if test="iId != null">
             and i_id = #{iId}
         </if>
         <if test="uId!= null">
@@ -63,4 +63,10 @@
         </set>
         where information.u_id = #{uId}
     </update>
+    <select id="getById" resultMap="BaseResultMap">
+        select * from information where information.i_id = #{iId}
+    </select>
+    <select id="getByUid" resultMap="BaseResultMap">
+        select * from information where information.u_id = #{uId}
+    </select>
 </mapper>

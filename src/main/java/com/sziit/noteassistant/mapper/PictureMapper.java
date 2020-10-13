@@ -21,13 +21,14 @@ public interface PictureMapper{
 
     public void addPicture(Picture picture);
 
-    @Select("select p.p_id,p.p_url,p.sort,p.text,p.n_id from picture p where p.p_url = #{url}")
     public Picture selectPictureByUrl(String url);
 
     @Delete("delete from picture where p_id = #{pId}")
     int deletePicture(Integer pId);
 
     void updatePicture(Picture picture);
-    @Select("select * from picture where p_id = #{pId}")
+
     Picture selectPictureByPid(Integer pId);
+
+    Picture selectOne(Picture picture);
 }

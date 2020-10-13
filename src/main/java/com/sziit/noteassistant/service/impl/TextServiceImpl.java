@@ -1,5 +1,6 @@
 package com.sziit.noteassistant.service.impl;
 
+import com.sziit.noteassistant.pojo.entity.Picture;
 import com.sziit.noteassistant.pojo.entity.Text;
 import com.sziit.noteassistant.mapper.TextMapper;
 import com.sziit.noteassistant.service.TextService;
@@ -33,8 +34,9 @@ public class TextServiceImpl implements TextService{
     }
 
     @Override
-    public void updateText(Text text) {
+    public Text updateText(Text text) {
         textMapper.updateText(text);
+        return textMapper.selectOne(text);
     }
 
     @Override
@@ -50,5 +52,15 @@ public class TextServiceImpl implements TextService{
             sum += result;
         }
         return sum == tIds.length;
+    }
+
+    @Override
+    public Text selectTextByTid(Integer tId) {
+        return textMapper.selectTextByTid(tId);
+    }
+
+    @Override
+    public Text selectOne(Text text) {
+        return textMapper.selectOne(text);
     }
 }

@@ -20,8 +20,8 @@ public interface AudioMapper{
 
     public List<Audio> selectAudiosByNid(Integer nId);
 
-    @Select("select a.a_id,a.a_url,a.sort,a.text,a.n_id from audio a where a.a_url = #{url}")
-    public Audio selectAudioByUrl(String url);
+
+    public Audio selectAudioOne(Audio audio);
 
     public int addAudio(Audio audio);
 
@@ -31,6 +31,6 @@ public interface AudioMapper{
     public int deleteAudio(Integer aId);
 
     public int deleteAudioOne(Audio audio);
-    @Select("select * from audio where a_id = #{aId}")
+
     Audio selectAudioByAid(Integer aId);
 }

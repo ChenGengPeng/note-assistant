@@ -37,7 +37,7 @@ public class PictureServiceImpl implements PictureService {
     @Override
     public Picture updatePicture(Picture picture) {
         pictureMapper.updatePicture(picture);
-        return pictureMapper.selectPictureByUrl(picture.getPUrl());
+        return pictureMapper.selectOne(picture);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class PictureServiceImpl implements PictureService {
     }
 
     @Override
-    public Picture selectPictureByUrl(String pUrl) {
-        return pictureMapper.selectPictureByUrl(pUrl);
+    public Picture selectPictureOne(Picture picture) {
+        return pictureMapper.selectOne(picture);
     }
 }

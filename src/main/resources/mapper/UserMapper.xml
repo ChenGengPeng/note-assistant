@@ -50,6 +50,9 @@
         </set>
         where user.u_id = #{uId}
     </update>
-    
+
+    <select id="getById" resultMap="BaseResultMap">
+        select * from user where user.u_id = #{uId}
+    </select>
 
 </mapper>
