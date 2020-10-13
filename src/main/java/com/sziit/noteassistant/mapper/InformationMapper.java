@@ -2,6 +2,7 @@ package com.sziit.noteassistant.mapper;
 
 
 import com.sziit.noteassistant.pojo.entity.Information;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -19,8 +20,10 @@ public interface InformationMapper {
     Information findOne(Information information);
     int add_infor(Information information);
     int updateInfor(Information information);
-    @Select("select * from information where information.i_id = #{iid}" )
-    Information getById(Integer iid);
-    @Select("select * from information where information.u_id = #{uid}" )
-    Information getByUid(Integer uid);
+    @Select("select * from information where information.i_id = #{iId}" )
+    Information getById(Integer iId);
+    @Select("select * from information where information.u_id = #{uId}" )
+    Information getByUid(Integer uId);
+    @Delete("delete from information where information.u_id = #{uId}")
+    void deletByUid(Integer uId);
 }

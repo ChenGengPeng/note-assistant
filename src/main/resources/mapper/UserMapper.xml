@@ -5,7 +5,7 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.sziit.noteassistant.pojo.entity.User">
-        <id column="u_id" property="uid" />
+        <id column="u_id" property="uId" />
         <result column="username" property="username" />
         <result column="password" property="password" />
     </resultMap>
@@ -16,8 +16,8 @@
         u_id, username, password
     </sql>
     <sql id="find_user_where">
-        <if test="uid != null">
-            and uid = #{uid}
+        <if test="uId != null">
+            and uid = #{uId}
         </if>
         <if test="username != null">
             and username = #{username}
@@ -27,7 +27,7 @@
         </if>
     </sql>
 
-    <insert id="add" useGeneratedKeys="true" keyProperty="uid">
+    <insert id="add" useGeneratedKeys="true" keyProperty="uId">
         insert into user(username,password) values (#{username},#{password})
     </insert>
 
@@ -48,7 +48,7 @@
                 password = #{password},
             </if>
         </set>
-        where user.u_id = #{uid}
+        where user.u_id = #{uId}
     </update>
     
 

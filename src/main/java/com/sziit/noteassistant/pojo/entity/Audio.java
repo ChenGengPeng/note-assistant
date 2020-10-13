@@ -24,20 +24,23 @@ public class Audio {
     private static final long serialVersionUID=1L;
 
     @ApiModelProperty(value = "音频id")
-    private Integer aid;
+    private Integer aId;
 
     @ApiModelProperty(value = "音频地址")
-    private String url;
+    private String aUrl;
 
     @ApiModelProperty(value = "音频排序")
     private Integer sort;
+
+    @ApiModelProperty(value = "音频文本")
+    private String aText;
 
     @ApiModelProperty(value = "所属笔记id")
     private Integer nId;
 
 
     protected Serializable pkVal() {
-        return this.aid;
+        return this.aId;
     }
 
 }

@@ -5,15 +5,60 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.sziit.noteassistant.pojo.entity.Audio">
-        <id column="a_id" property="aid" />
-        <result column="a_url" property="url" />
-        <result column="a_sort" property="sort" />
+        <id column="a_id" property="aId" />
+        <result column="a_url" property="aUrl" />
+        <result column="sort" property="sort" />
+        <result column="a_text" property="aText"/>
         <result column="n_id" property="nId" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        a_id, a_url, a_sort, n_id
+        a_id, a_url, sort,a_text, n_id
     </sql>
+    <sql id="find_audio_where">
+        <if test="aUrl != null">
+            and a_url = #{aUrl}
+        </if>
+        <if test="sort != null">
+            and sort = #{sort}
+        </if>
+        <if test="aText != null">
+            and a_text = #{aText}
+        </if>
+        <if test="nId != null">
+            and n_id = #{nId}
+        </if>
+    </sql>
+    <insert id="addAudio">
+        insert into  audio(a_url,sort,a_text, n_id) values (#{aUrl},#{sort},#{aText},#{nId})
+    </insert>
+
+    <select id="selectAudiosByNid" resultType="com.sziit.noteassistant.pojo.entity.Audio">
+        select a.a_id, a.a_url, a.sort,a.a_text from audio a where a.n_id = #{nId}
+    </select>
+
+    <update id="updateAudio">
+        update audio
+        <set>
+            <if test="aUrl != null">
+                audio.a_url = #{aUrl},
+            </if>
+            <if test="sort != null">
+                audio.sort = #{sort},
+            </if>
+            <if test="aText != null">
+                audio.a_text = #{aText},
+            </if>
+        </set>
+        where audio.n_id = #{nId}
+    </update>
+
+    <delete id="deleteAudioOne">
+        delete from audio
+        <where>
+            <include refid="find_audio_where"></include>
+        </where>
+    </delete>
 
 </mapper>

@@ -28,7 +28,7 @@ public class User {
     private static final long serialVersionUID=1L;
 
     @ApiModelProperty(value = "用户id")
-    private Integer uid;
+    private Integer uId;
 
     @ApiModelProperty(value = "用户名")
     private String username;
@@ -39,7 +39,7 @@ public class User {
 
 
     protected Serializable pkVal() {
-        return this.uid;
+        return this.uId;
     }
 
 }

@@ -27,8 +27,20 @@
 
     <insert id="addNote" useGeneratedKeys="true" keyProperty="nId">
         insert into note(n_name,createtime,u_id)
-        values (#{nId},#{nName},#{createtime},#{uId})
+        values (#{nName},#{createtime},#{uId})
     </insert>
 
+    <update id="updateNote">
+        update note
+        <set>
+            <if test="nName != null">
+                note.n_name = #{nName},
+            </if>
+            <if test="createtime != null">
+                note.createtime = #{createtime},
+            </if>
+        </set>
+        where note.n_id = #{nId}
+    </update>
 
 </mapper>

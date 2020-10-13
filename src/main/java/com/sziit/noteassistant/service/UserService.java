@@ -11,7 +11,7 @@ import com.sziit.noteassistant.pojo.entity.User;
  * @since 2020-10-04
  */
 public interface UserService {
-   public void add(User user);
+   public User add(User user);
 
    public User findById(Integer uid);
 

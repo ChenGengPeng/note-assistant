@@ -14,8 +14,10 @@ import com.sziit.noteassistant.pojo.entity.Information;
  */
 public interface InformationService {
 
-    public void addInform(Information information);
+    public Information addInform(Information information);
     public Information findById(Integer iid);
     public Information findByUid(Integer uid);
     public boolean updateInform(Information information);
+
+    public void deleteByUid(Integer uid);
 }

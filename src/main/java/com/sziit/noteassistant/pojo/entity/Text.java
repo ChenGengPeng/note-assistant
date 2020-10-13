@@ -24,13 +24,13 @@ public class Text {
     private static final long serialVersionUID=1L;
 
     @ApiModelProperty(value = "文本id")
-    private Integer tid;
+    private Integer tId;
 
-    @ApiModelProperty(value = "文本的url")
-    private String url;
+    @ApiModelProperty(value = "文本的排序")
+    private Integer sort;
 
     @ApiModelProperty(value = "文本的内容")
-    private Integer text;
+    private String text;
 
     @ApiModelProperty(value = "文本所属笔记id")
     private Integer nId;
@@ -38,7 +38,7 @@ public class Text {
 
 
     protected Serializable pkVal() {
-        return this.tid;
+        return this.tId;
     }
 
 }

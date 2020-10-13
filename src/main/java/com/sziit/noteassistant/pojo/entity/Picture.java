@@ -23,13 +23,16 @@ public class Picture {
     private static final long serialVersionUID=1L;
 
     @ApiModelProperty(value = "图片id")
-    private Integer pid;
+    private Integer pId;
 
     @ApiModelProperty(value = "图片的url")
-    private String url;
+    private String pUrl;
 
     @ApiModelProperty(value = "图片的排序")
     private Integer sort;
+
+    @ApiModelProperty(value = "图片文本")
+    private String pText;
 
     @ApiModelProperty(value = "图片所属笔记id")
     private Integer nId;
@@ -37,7 +40,7 @@ public class Picture {
 
 
     protected Serializable pkVal() {
-        return this.pid;
+        return this.pId;
     }
 
 }

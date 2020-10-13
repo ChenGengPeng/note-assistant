@@ -34,4 +34,24 @@ public class NoteServiceImpl implements NoteService {
         noteMapper.addNote(note);
     }
 
+    @Override
+    public void updateNote(Note note) {
+        noteMapper.updateNote(note);
+    }
+
+    @Override
+    public void deleteNote(Integer nId) {
+        noteMapper.deleteNote(nId);
+    }
+
+    @Override
+    public boolean deleteNotes(Integer[] nIds) {
+        int sum = 0;
+        for(Integer nId : nIds){
+            int result = noteMapper.deleteNote(nId);
+            sum += result;
+        }
+        return sum == nIds.length;
+    }
+
 }

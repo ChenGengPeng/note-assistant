@@ -24,8 +24,11 @@ public class InformationServiceImpl implements InformationService {
     @Autowired
     private InformationMapper informationMapper;
     @Override
-    public void addInform(Information information) {
+    public Information addInform(Information information) {
         informationMapper.add_infor(information);
+        Information information1 = new Information();
+        information1.setUId(information.getUId());
+        return informationMapper.findOne(information1);
     }
 
     @Override
@@ -42,5 +45,10 @@ public class InformationServiceImpl implements InformationService {
     public boolean updateInform(Information information) {
         informationMapper.updateInfor(information);
         return true;
+    }
+
+    @Override
+    public void deleteByUid(Integer uid) {
+        informationMapper.deletByUid(uid);
     }
 }

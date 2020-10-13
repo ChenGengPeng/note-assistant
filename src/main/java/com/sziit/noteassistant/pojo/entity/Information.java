@@ -23,7 +23,7 @@ public class Information {
     private static final long serialVersionUID=1L;
 
     @ApiModelProperty(value = "信息id")
-    private Integer iid;
+    private Integer iId;
 
     @ApiModelProperty(value = "用户电话")
     private String phone;
@@ -48,6 +48,6 @@ public class Information {
 
 
     protected Serializable pkVal() {
-        return this.iid;
+        return this.iId;
     }
 }

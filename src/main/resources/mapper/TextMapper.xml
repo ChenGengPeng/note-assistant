@@ -5,15 +5,53 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.sziit.noteassistant.pojo.entity.Text">
-        <id column="t_id" property="id" />
-        <result column="t_sort" property="sort" />
+        <id column="t_id" property="tId" />
+        <result column="sort" property="sort" />
         <result column="text" property="text" />
         <result column="n_id" property="nId" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        t_id, t_sort, text, n_id
+        t_id, sort, text, n_id
+    </sql>
+    <sql id="find_text_where">
+        <if test="sort != null">
+            and sort = #{sort}
+        </if>
+        <if test="text != null">
+            and text = #{text}
+        </if>
+        <if test="nId != null">
+            and n_id = #{nId}
+        </if>
     </sql>
 
+    <select id="selectTextByNid" resultType="com.sziit.noteassistant.pojo.entity.Text">
+        select t.t_id, t.sort, t.text from text t where t.n_id = #{nId}
+    </select>
+
+    <insert id="addText">
+        insert into  text(sort,text, n_id) values (#{sort},#{text},#{nId})
+    </insert>
+    
+    <select id="selectOne" resultMap="BaseResultMap">
+        select t.t_id,t.sort,t.text,t.n_id from text
+        <where>
+            <include refid="find_text_where"></include>
+        </where>
+    </select>
+
+    <update id="updateText">
+        update text
+        <set>
+            <if test="sort != null">
+                text.sort = #{sort},
+            </if>
+            <if test="text != null">
+                text.text = #{aText},
+            </if>
+        </set>
+        where text.n_id = #{nId}
+    </update>
 </mapper>

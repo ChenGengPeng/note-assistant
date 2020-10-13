@@ -4,14 +4,14 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.sziit.noteassistant.pojo.entity.Information">
-        <id column="i_id" property="iid" />
+        <id column="i_id" property="iId" />
         <result column="phone" property="phone" />
         <result column="profile" property="profile" />
         <result column="country" property="country" />
         <result column="province" property="province" />
         <result column="city" property="city" />
         <result column="uPhoto" property="uPhoto" />
-        <result column="u_Id" property="uI1d" />
+        <result column="u_Id" property="uId" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -20,7 +20,7 @@
     </sql>
     <sql id="find_infor_where">
         <if test="iid != null">
-            and i_id = #{iid}
+            and i_id = #{iId}
         </if>
         <if test="uId!= null">
             and u_Id = #{uId}
@@ -34,7 +34,7 @@
         </where>
     </select>
     
-    <insert id="add_infor" useGeneratedKeys="true" keyProperty="iid">
+    <insert id="add_infor" useGeneratedKeys="true" keyProperty="iId">
         insert into information(phone,profile,country,province,city,photo_url,u_id)
         values (#{phone},#{profile},#{country},#{province},#{city},#{uPhoto},#{uId})
     </insert>

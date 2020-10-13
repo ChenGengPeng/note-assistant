@@ -1,6 +1,9 @@
 package com.sziit.noteassistant.service;
 
+import com.sziit.noteassistant.pojo.entity.Audio;
 import com.sziit.noteassistant.pojo.entity.Picture;
+
+import java.util.List;
 
 
 /**
@@ -13,4 +16,17 @@ import com.sziit.noteassistant.pojo.entity.Picture;
  */
 public interface PictureService{
 
+    public List<Picture> selectPictureByNid(Integer nId);
+
+    public void addPicture(Picture picture);
+
+    public Picture updatePicture(Picture picture);
+
+    public void deletePicture(Integer pId);
+
+    public boolean deletePictures(Integer[] pIds);
+
+    Picture selectPictureByPid(Integer pId);
+
+    Picture selectPictureByUrl(String pUrl);
 }

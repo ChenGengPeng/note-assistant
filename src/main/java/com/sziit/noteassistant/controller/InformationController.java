@@ -37,12 +37,12 @@ public class InformationController {
      */
     @PostMapping("addInfo")
     @ApiOperation(value = "添加信息")
-    public Object add(@RequestBody Information information) {
+    public Object addInfor(@RequestBody Information information) {
         JSONObject jsonObject = new JSONObject();
-        informationService.addInform(information);
-        User user = userService.findById(information.getUId());
+        Information information1 = informationService.addInform(information);
+        User user = userService.findById(information1.getUId());
         jsonObject.put("code",200);
-        jsonObject.put("information",information);
+        jsonObject.put("information",information1);
         jsonObject.put("username",user.getUsername());
         return jsonObject;
     }
@@ -57,7 +57,7 @@ public class InformationController {
     public Object findInfo(@RequestParam("username")String username) {
         JSONObject jsonObject = new JSONObject();
         User user = userService.findByName(username);
-        Information information = informationService.findByUid(user.getUid());
+        Information information = informationService.findByUid(user.getUId());
         jsonObject.put("code",200);
         jsonObject.put("information",information);
         return jsonObject;
@@ -65,11 +65,24 @@ public class InformationController {
 
     @PutMapping("updateInfo")
     @ApiOperation(value = "更新信息")
-    public Object findInfo(@RequestBody Information information) {
+    public Object updateInfo(@RequestBody Information information) {
         JSONObject jsonObject = new JSONObject();
         informationService.updateInform(information);
+        Information information1 = informationService.findByUid(information.getUId());
         jsonObject.put("code",200);
-        jsonObject.put("information",information);
+        jsonObject.put("information",information1);
+        return jsonObject;
+    }
+
+
+    @DeleteMapping("delInfo")
+    @ApiOperation(value = "删除信息")
+    public Object deleteInfo(@RequestParam  String username) {
+        JSONObject jsonObject = new JSONObject();
+        User user = userService.findByName(username);
+        informationService.deleteByUid(user.getUId());
+        jsonObject.put("code",200);
+        jsonObject.put("message","删除成功");
         return jsonObject;
     }
 

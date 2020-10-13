@@ -5,15 +5,37 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.sziit.noteassistant.pojo.entity.Picture">
-        <id column="p_id" property="id" />
-        <result column="p_url" property="url" />
+        <id column="p_id" property="pId" />
+        <result column="p_url" property="pUrl" />
         <result column="p_sort" property="sort" />
+        <result column="p_text" property="pText"/>
         <result column="n_id" property="nId" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        p_id, p_url, p_sort, n_id
+        p_id, p_url, sort, p_text,n_id
     </sql>
 
+    <select id="selectPictureByNid" resultType="com.sziit.noteassistant.pojo.entity.Picture">
+        select p.p_id, p.p_url, p.sort,p.p_text from picture p where p.n_id = #{nId}
+    </select>
+    <insert id="addPicture">
+        insert into  picture(p_url,sort,p_text, n_id) values (#{pUrl},#{sort},#{pText},#{nId})
+    </insert>
+    <update id="updatePicture">
+        update picture
+        <set>
+            <if test="pUrl != null">
+                picture.p_url = #{pUrl},
+            </if>
+            <if test="sort != null">
+                picture.sort = #{sort},
+            </if>
+            <if test="pText != null">
+                picture.p_text = #{pText},
+            </if>
+        </set>
+        where picture.n_id = #{nId}
+    </update>
 </mapper>

@@ -36,7 +36,7 @@ public class UserController {
      */
     @PostMapping("register")
     @ApiOperation(value = "注册")
-    public Object add(@RequestBody User user) {
+    public Object register(@RequestBody User user) {
         JSONObject jsonObject = new JSONObject();
         if (userService.findByName(user.getUsername()) != null) {
             jsonObject.put("message", "用户名已被使用");
@@ -45,11 +45,11 @@ public class UserController {
         userService.add(user);
         User userInDataBase = userService.findByName(user.getUsername());
         Information information = new Information();
-        information.setUId(userInDataBase.getUid());
+        information.setUId(userInDataBase.getUId());
         informationService.addInform(information);
         jsonObject.put("code",200);
-        jsonObject.put("username",user.getUsername());
-        jsonObject.put("uId",user.getUid());
+        jsonObject.put("username",userInDataBase.getUsername());
+        jsonObject.put("uId",userInDataBase.getUId());
         return jsonObject;
     }
 
@@ -66,11 +66,12 @@ public class UserController {
 //            String token = userService.getToken(userInDataBase);
             jsonObject.put("code",200);
 //            jsonObject.put("token", token);
-            jsonObject.put("uid", userInDataBase.getUid());
+            jsonObject.put("uid", userInDataBase.getUId());
             jsonObject.put("userName", userInDataBase.getUsername());
         }
         return jsonObject;
     }
+
 
     @PutMapping("change")
     @ApiOperation(value = "修改密码")
@@ -83,9 +84,9 @@ public class UserController {
         } else if (!userService.comparePassword(user.getPassword(), userInDataBase.getPassword())) {
             jsonObject.put("message", "密码不正确");
         }else {
-            userService.changePassword(userInDataBase.getUid(),newPassword);
+            userService.changePassword(userInDataBase.getUId(),newPassword);
             jsonObject.put("code",200);
-            jsonObject.put("uid",user.getUid());
+            jsonObject.put("uid",userInDataBase.getUId());
             jsonObject.put("message","修改成功");
         }
         return jsonObject;

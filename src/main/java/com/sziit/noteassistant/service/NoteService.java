@@ -18,4 +18,10 @@ public interface NoteService  {
     public List<Note> selectNotesByUid(Integer uId);
 
     public void addNote(Note note);
+
+    void updateNote(Note note);
+
+    void deleteNote(Integer nId);
+
+    boolean deleteNotes(Integer[] nIds);
 }

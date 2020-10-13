@@ -3,7 +3,10 @@ package com.sziit.noteassistant.service.impl;
 import com.sziit.noteassistant.pojo.entity.Text;
 import com.sziit.noteassistant.mapper.TextMapper;
 import com.sziit.noteassistant.service.TextService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * <p>
@@ -14,6 +17,38 @@ import org.springframework.stereotype.Service;
  * @since 2020-10-04
  */
 @Service
-public class TextServiceImpl  {
+public class TextServiceImpl implements TextService{
 
+    @Autowired
+    private TextMapper textMapper;
+
+    @Override
+    public List<Text> selectTextByNid(Integer nId) {
+        return textMapper.selectTextByNid(nId);
+    }
+
+    @Override
+    public void addText(Text text) {
+        textMapper.addText(text);
+    }
+
+    @Override
+    public void updateText(Text text) {
+        textMapper.updateText(text);
+    }
+
+    @Override
+    public void deleteText(Integer tId) {
+        textMapper.deleteText(tId);
+    }
+
+    @Override
+    public boolean deleteTexts(Integer[] tIds) {
+        int sum =0;
+        for (Integer tId: tIds) {
+            int result = textMapper.deleteText(tId);
+            sum += result;
+        }
+        return sum == tIds.length;
+    }
 }

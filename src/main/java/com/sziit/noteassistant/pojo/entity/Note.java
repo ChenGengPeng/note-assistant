@@ -3,6 +3,10 @@ package com.sziit.noteassistant.pojo.entity;
 
 import java.time.LocalDateTime;
 import java.io.Serializable;
+
+import com.alibaba.fastjson.annotation.JSONField;
+import com.sziit.noteassistant.config.LocalDateTimeDeserializer;
+import com.sziit.noteassistant.config.LocalDateTimeSerializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -34,6 +38,7 @@ public class Note  {
     private String nName;
 
     @ApiModelProperty(value = "创建时间")
+    @JSONField(serializeUsing = LocalDateTimeSerializer.class,deserializeUsing = LocalDateTimeDeserializer.class)
     private LocalDateTime createtime;
 
     @ApiModelProperty(value = "所属用户id")

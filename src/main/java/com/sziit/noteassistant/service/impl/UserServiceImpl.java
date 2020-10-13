@@ -36,15 +36,18 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public void add(User user) {
+    public User add(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userMapper.add(user);
+        User user1 = new User();
+        user1.setUsername(user.getUsername());
+        return userMapper.findOne(user1);
     }
 
     @Override
     public String getToken(User user){
         String token = "";
-        token= JWT.create().withAudience(user.getUid().toString()).sign(Algorithm.HMAC256(user.getPassword()));
+        token= JWT.create().withAudience(user.getUId().toString()).sign(Algorithm.HMAC256(user.getPassword()));
         return token;
     }
     @Override
