@@ -19,7 +19,7 @@
         <java.version>1.8</java.version>
         <fastjson.version>1.2.47</fastjson.version>
         <mybatis.plus.version>3.3.0</mybatis.plus.version>
-        <docker.image.prefix>springboot</docker.image.prefix>
+        <docker.image.prefix>cgp</docker.image.prefix>
     </properties>
 
     <dependencies>
@@ -125,11 +125,12 @@
             <artifactId>lombok</artifactId>
             <version>1.18.12</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.testng/testng -->
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>RELEASE</version>
-            <scope>compile</scope>
+            <version>6.14.3</version>
+            <scope>test</scope>
         </dependency>
         <!--Swagger-ui配置-->
         <dependency>
@@ -178,7 +179,7 @@
                 <version>1.0.0</version>
                 <configuration>
                     <imageName>${docker.image.prefix}/${project.artifactId}</imageName>
-                    <dockerDirectory>src/main/docker</dockerDirectory>
+                    <dockerDirectory></dockerDirectory>
                     <resources>
                         <resource>
                             <targetPath>/</targetPath>

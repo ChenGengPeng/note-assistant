@@ -5,7 +5,6 @@ import com.sziit.noteassistant.pojo.entity.Note;
 import io.swagger.models.auth.In;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Update;
-import org.apache.tools.ant.taskdefs.condition.Not;
 
 import java.util.List;
 
