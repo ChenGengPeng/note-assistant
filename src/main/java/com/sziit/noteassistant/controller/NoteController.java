@@ -2,6 +2,8 @@ package com.sziit.noteassistant.controller;
 
 
 import com.alibaba.fastjson.JSONObject;
+import com.sziit.noteassistant.http.ResultCode;
+import com.sziit.noteassistant.http.ResultVo;
 import com.sziit.noteassistant.pojo.entity.Audio;
 import com.sziit.noteassistant.pojo.entity.Note;
 import com.sziit.noteassistant.pojo.entity.User;
@@ -26,7 +28,6 @@ import java.util.List;
  */
 @Api(tags = "笔记")
 @RestController
-@RequestMapping("/note")
 public class NoteController {
     @Autowired
     private NoteService noteService;
@@ -37,13 +38,8 @@ public class NoteController {
     @GetMapping("findNote")
     @ApiOperation(value = "查询笔记")
     public Object findNote(@RequestParam String username) {
-        JSONObject jsonObject = new JSONObject();
         User user = userService.findByName(username);
-        List<Note> notes = noteService.selectNotesByUid(user.getUId());
-        jsonObject.put("code",200);
-        jsonObject.put("username",username);
-        jsonObject.put("notes",notes);
-        return jsonObject;
+        return new ResultVo(noteService.selectNotesByUid(user.getUId()));
     }
 
     @PostMapping("addNote")
@@ -56,30 +52,22 @@ public class NoteController {
         note.setUId(user.getUId());
         note.setCreatetime(LocalDateTime.now());
         noteService.addNote(note);
-        jsonObject.put("code",200);
-        jsonObject.put("note",note);
-        return jsonObject;
+        return new ResultVo(noteService.findOne(note));
     }
 
     @PutMapping("updateNote")
     @ApiOperation(value = "修改笔记")
     public Object updateNote(@RequestBody Note note){
-     JSONObject jsonObject = new JSONObject();
      noteService.updateNote(note);
-     jsonObject.put("code",200);
-     jsonObject.put("note",note);
-     return jsonObject;
+     return new ResultVo(noteService.findOne(note));
     }
 
 
     @DeleteMapping("delNote")
     @ApiOperation(value = "删除笔记")
     public Object deleteNote(@RequestParam Integer nId){
-        JSONObject jsonObject = new JSONObject();
         noteService.deleteNote(nId);
-        jsonObject.put("code",200);
-        jsonObject.put("message","删除成功");
-        return jsonObject;
+        return new ResultVo(ResultCode.SUCCESS);
     }
 
     @DeleteMapping("delNotes")
@@ -88,14 +76,10 @@ public class NoteController {
         JSONObject jsonObject = new JSONObject();
         boolean result = noteService.deleteNotes(nIds);
         if (result){
-            jsonObject.put("code",200);
-            jsonObject.put("message","删除成功");
-        }else {
-            jsonObject.put("message","删除失败");
+            return new ResultVo(ResultCode.SUCCESS);
         }
-        return jsonObject;
+        return new ResultVo(ResultCode.BAD_REQUEST);
     }
-
 
 }
 

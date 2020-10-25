@@ -2,6 +2,8 @@ package com.sziit.noteassistant.controller;
 
 
 import com.alibaba.fastjson.JSONObject;
+import com.sziit.noteassistant.http.ResultCode;
+import com.sziit.noteassistant.http.ResultVo;
 import com.sziit.noteassistant.pojo.entity.Information;
 import com.sziit.noteassistant.pojo.entity.User;
 import com.sziit.noteassistant.service.InformationService;
@@ -22,7 +24,6 @@ import org.springframework.web.bind.annotation.*;
  */
 @Api(tags = "用户信息")
 @RestController
-@RequestMapping("/infor")
 public class InformationController {
 
     @Autowired
@@ -38,13 +39,7 @@ public class InformationController {
     @PostMapping("addInfo")
     @ApiOperation(value = "添加信息")
     public Object addInfor(@RequestBody Information information) {
-        JSONObject jsonObject = new JSONObject();
-        Information information1 = informationService.addInform(information);
-        User user = userService.findById(information1.getUId());
-        jsonObject.put("code",200);
-        jsonObject.put("information",information1);
-        jsonObject.put("username",user.getUsername());
-        return jsonObject;
+        return new ResultVo(informationService.addInform(information));
     }
 
     /**
@@ -55,35 +50,24 @@ public class InformationController {
     @GetMapping("findInfo")
     @ApiOperation(value = "查询信息")
     public Object findInfo(@RequestParam("username")String username) {
-        JSONObject jsonObject = new JSONObject();
         User user = userService.findByName(username);
-        Information information = informationService.findByUid(user.getUId());
-        jsonObject.put("code",200);
-        jsonObject.put("information",information);
-        return jsonObject;
+        return new ResultVo(informationService.findByUid(user.getUId()));
     }
 
     @PutMapping("updateInfo")
     @ApiOperation(value = "更新信息")
     public Object updateInfo(@RequestBody Information information) {
-        JSONObject jsonObject = new JSONObject();
         informationService.updateInform(information);
-        Information information1 = informationService.findByUid(information.getUId());
-        jsonObject.put("code",200);
-        jsonObject.put("information",information1);
-        return jsonObject;
+        return new ResultVo(informationService.findByUid(information.getUId()));
     }
 
 
     @DeleteMapping("delInfo")
     @ApiOperation(value = "删除信息")
     public Object deleteInfo(@RequestParam  String username) {
-        JSONObject jsonObject = new JSONObject();
         User user = userService.findByName(username);
         informationService.deleteByUid(user.getUId());
-        jsonObject.put("code",200);
-        jsonObject.put("message","删除成功");
-        return jsonObject;
+        return new ResultVo(ResultCode.SUCCESS);
     }
 
 }

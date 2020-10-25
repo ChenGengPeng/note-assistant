@@ -54,4 +54,8 @@ public class NoteServiceImpl implements NoteService {
         return sum == nIds.length;
     }
 
+    public Note findOne(Note note){
+        return noteMapper.findOne(note);
+    }
+
 }

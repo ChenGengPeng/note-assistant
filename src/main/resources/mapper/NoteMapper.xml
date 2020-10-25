@@ -21,6 +21,21 @@
         n_id, n_name, createtime, u_id
     </sql>
 
+    <sql id="find_note_where">
+        <if test="nId != null">
+            and n_id = #{nId}
+        </if>
+        <if test="nName != null">
+            and n_name = #{nName}
+        </if>
+        <if test="createtime != null">
+            and createtime = #{createtime}
+        </if>
+        <if test="uId != null">
+            and u_id = #{uId}
+        </if>
+    </sql>
+
     <select id="selectNotesByUid" resultType="com.sziit.noteassistant.pojo.entity.Note">
         select n.n_id,n.n_name,n.createtime from note n where n.u_id = #{uId}
     </select>
@@ -42,5 +57,12 @@
         </set>
         where note.n_id = #{nId}
     </update>
+
+    <select id="findOne" resultMap="BaseResultMap">
+        select n.n_id,n.n_name,n.createtime,n.u_id from note n
+        <where>
+            <include refid="find_note_where"></include>
+        </where>
+    </select>
 
 </mapper>

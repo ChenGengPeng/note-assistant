@@ -24,4 +24,6 @@ public interface NoteService  {
     void deleteNote(Integer nId);
 
     boolean deleteNotes(Integer[] nIds);
+
+    public Note findOne(Note note);
 }

@@ -10,7 +10,7 @@ import com.sziit.noteassistant.pojo.entity.User;
  * @author CGP
  * @since 2020-10-04
  */
-public interface UserService {
+public interface UserService{
    public User add(User user);
 
    public User findById(Integer uid);
@@ -22,4 +22,7 @@ public interface UserService {
    public void changePassword(Integer id,String newPassword);
 
    public boolean comparePassword(String newPassword,String oldPassword);
+
+
+
 }

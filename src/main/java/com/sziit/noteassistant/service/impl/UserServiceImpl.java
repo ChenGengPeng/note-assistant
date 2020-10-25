@@ -3,17 +3,19 @@ package com.sziit.noteassistant.service.impl;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.sziit.noteassistant.mapper.TextMapper;
 import com.sziit.noteassistant.mapper.UserMapper;
-import com.sziit.noteassistant.pojo.entity.Text;
 import com.sziit.noteassistant.pojo.entity.User;
-import com.sziit.noteassistant.service.TextService;
 import com.sziit.noteassistant.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.io.UnsupportedEncodingException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -72,4 +74,6 @@ public class UserServiceImpl implements UserService {
     public boolean comparePassword(String newPassword,String oldPassword) {
         return passwordEncoder.matches(newPassword,oldPassword);
     }
+
+
 }

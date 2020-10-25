@@ -2,6 +2,8 @@ package com.sziit.noteassistant.controller;
 
 
 import com.alibaba.fastjson.JSONObject;
+import com.sziit.noteassistant.http.ResultCode;
+import com.sziit.noteassistant.http.ResultVo;
 import com.sziit.noteassistant.pojo.entity.Audio;
 import com.sziit.noteassistant.pojo.entity.Picture;
 import com.sziit.noteassistant.service.AudioService;
@@ -21,63 +23,39 @@ import org.springframework.web.bind.annotation.*;
  */
 @Api(tags = "图片")
 @RestController
-@RequestMapping("/picture")
 public class PictureController {
 
     @Autowired
     private PictureService pictureService;
 
-    @GetMapping("findPicture")
+    @GetMapping("findPic")
     @ApiOperation(value = "查询图片")
     public Object findPicture(@RequestParam Integer pId) {
-        JSONObject jsonObject = new JSONObject();
-        Picture pictureInDB = pictureService.selectPictureByPid(pId);
-        jsonObject.put("picture",pictureInDB);
-        return jsonObject;
+        return new ResultVo(pictureService.selectPictureByPid(pId));
     }
 
-    @PostMapping("addPicture")
+    @PostMapping("addPic")
     @ApiOperation(value = "添加图片")
     public Object addPicture(@RequestBody Picture picture) {
-        JSONObject jsonObject = new JSONObject();
         pictureService.addPicture(picture);
-        Picture pictureInDB = pictureService.selectPictureOne(picture);
-        jsonObject.put("picture",pictureInDB);
-        return jsonObject;
+        return new ResultVo(pictureService.selectPictureOne(picture));
     }
 
-    @DeleteMapping("delPicture")
-    @ApiOperation(value = "删除图片")
-    public Object delPicture(@RequestParam Integer pId) {
-        JSONObject jsonObject = new JSONObject();
-        pictureService.deletePicture(pId);
-        jsonObject.put("code",200);
-        jsonObject.put("message","删除成功");
-        return jsonObject;
-    }
 
-    @PutMapping("updatePicture")
+    @PutMapping("updatePic")
     @ApiOperation(value = "修改图片")
     public Object updatePicture(@RequestBody Picture picture){
-        JSONObject jsonObject = new JSONObject();
-        Picture pictureInDB = pictureService.updatePicture(picture);
-        jsonObject.put("code",200);
-        jsonObject.put("note",pictureInDB);
-        return jsonObject;
+        return new ResultVo(pictureService.updatePicture(picture));
     }
 
-    @DeleteMapping("delPictures")
+    @DeleteMapping("delPic")
     @ApiOperation(value = "删除多个图片")
     public Object delPictures(@RequestParam Integer[] pIds){
-        JSONObject jsonObject = new JSONObject();
         boolean result = pictureService.deletePictures(pIds);
         if (result){
-            jsonObject.put("code",200);
-            jsonObject.put("message","删除成功");
-        }else {
-            jsonObject.put("message","删除失败");
+            return new ResultVo(ResultCode.SUCCESS);
         }
-        return jsonObject;
+        return new ResultVo(ResultCode.BAD_REQUEST);
     }
 
 }

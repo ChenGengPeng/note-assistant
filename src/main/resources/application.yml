@@ -1,8 +1,8 @@
 qiniuyun:
   ACCESS_KEY: bUppOaCX9aNaaehuZ0QdAG-cpci9B51jXT6XgMyr
   SECRET_KEY: Mzm26CsGtTy-2-S0sNnn-xtput6hkB3mr9nBI6qI
-  BUCKET: notes-assistant
-  DOMAIN: http://qhg4lamoz.hn-bkt.clouddn.com/
+  BUCKET: note-assistant
+  DOMAIN: http://qiqx0hdt6.hn-bkt.clouddn.com/
   REGIONCODE: region2
   KEY: null
 server:
@@ -12,6 +12,9 @@ server:
       enabled: true
       charset: UTF-8
       force: true
+    context-path: /v1/
+  port: 8080
+
 spring:
   mvc:
     # 打印 web-log
@@ -29,7 +32,7 @@ spring:
       max-lifetime: 1800000 # 连接的生命时长（毫秒），超时而且没被使用则被释放（retired），默认:30分钟
       connection-test-query: SELECT 1
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/note_assistant?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf8&autoReconnect=true&allowMultiQueries=true
+    url: jdbc:mysql://101.37.30.70/:3306/note_assistant?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf8&autoReconnect=true&allowMultiQueries=true
     username: root
     password: 3412410
   devtools:
@@ -43,7 +46,7 @@ spring:
   security:
     basic:
       path: /swagger-ui.html
-      enabled: true
+      enabled: false
     user:
       name: admin
       password: 3412410
@@ -65,3 +68,8 @@ logging:
     org:
       example:
         security: debug
+#jwt:
+#  SECRET: (CGP:)_$^3412410^%$_(ZHJ:)_@@++--(ZZS:)_++++_.sds_(QGR:)
+#  EXPIRATION_TIME: 86400
+#  TOKEN_PREFIX: Bearer
+#  AUTHORIZATION: Authorization

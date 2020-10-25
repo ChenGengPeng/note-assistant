@@ -1,6 +1,7 @@
 package com.sziit.noteassistant.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.sziit.noteassistant.http.ResultVo;
 import com.sziit.noteassistant.pojo.NoteDetail;
 import com.sziit.noteassistant.service.NoteDetailService;
 import io.swagger.annotations.Api;
@@ -14,36 +15,26 @@ import org.springframework.web.bind.annotation.*;
  */
 @Api(tags = "笔记详情")
 @RestController
-@RequestMapping("/noteDetail")
 public class NoteDetailController {
 
     @Autowired
     private NoteDetailService noteDetailService;
 
-    @GetMapping("findNoteDetail")
+    @GetMapping("findNDetail")
     @ApiOperation(value = "查询笔记详情")
     public Object findNoteDetail(@RequestParam Integer nId) {
-        JSONObject jsonObject = new JSONObject();
-        NoteDetail noteDetail = noteDetailService.selectNoteDetail(nId);
-        jsonObject.put("noteDetail",noteDetail);
-        return jsonObject;
+        return new ResultVo(noteDetailService.selectNoteDetail(nId));
     }
 
-    @PostMapping("addNoteDetail")
+    @PostMapping("addNDetail")
     @ApiOperation(value = "添加笔记详情")
     public Object addNoteDetail(@RequestBody NoteDetail noteDetail) {
-        JSONObject jsonObject = new JSONObject();
-        NoteDetail noteDetailInDB = noteDetailService.addNoteDetail(noteDetail);
-        jsonObject.put("noteDetail", noteDetailInDB);
-        return jsonObject;
+        return new ResultVo(noteDetailService.addNoteDetail(noteDetail));
     }
 
-    @DeleteMapping("delNoteDetail")
+    @DeleteMapping("delNDetail")
     @ApiOperation(value = "删除笔记详情")
     public Object delNoteDetail(@RequestBody NoteDetail noteDetail) {
-        JSONObject jsonObject = new JSONObject();
-        NoteDetail noteDetailInDB = noteDetailService.deleteNoteDetails(noteDetail);
-        jsonObject.put("noteDetail", noteDetailInDB);
-        return jsonObject;
+        return new ResultVo(noteDetailService.deleteNoteDetails(noteDetail));
     }
 }

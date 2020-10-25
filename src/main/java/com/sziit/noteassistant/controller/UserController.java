@@ -2,6 +2,8 @@ package com.sziit.noteassistant.controller;
 
 
 import com.alibaba.fastjson.JSONObject;
+import com.sziit.noteassistant.http.ResultCode;
+import com.sziit.noteassistant.http.ResultVo;
 import com.sziit.noteassistant.pojo.entity.Information;
 import com.sziit.noteassistant.pojo.entity.User;
 import com.sziit.noteassistant.service.InformationService;
@@ -10,6 +12,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p>
@@ -21,7 +26,6 @@ import org.springframework.web.bind.annotation.*;
  */
 @Api(tags = "用户")
 @RestController
-@RequestMapping("/user")
 public class UserController {
 
     @Autowired
@@ -37,39 +41,33 @@ public class UserController {
     @PostMapping("register")
     @ApiOperation(value = "注册")
     public Object register(@RequestBody User user) {
-        JSONObject jsonObject = new JSONObject();
         if (userService.findByName(user.getUsername()) != null) {
-            jsonObject.put("message", "用户名已被使用");
-            return jsonObject;
+            return new ResultVo(ResultCode.DUPLICATE_USERNAME);
         }
         userService.add(user);
         User userInDataBase = userService.findByName(user.getUsername());
         Information information = new Information();
         information.setUId(userInDataBase.getUId());
         informationService.addInform(information);
-        jsonObject.put("code",200);
-        jsonObject.put("username",userInDataBase.getUsername());
-        jsonObject.put("uId",userInDataBase.getUId());
-        return jsonObject;
+        User user1 = new User();
+        user1.setUsername(userInDataBase.getUsername());
+        user1.setUId(userInDataBase.getUId());
+        return new ResultVo(user1);
     }
 
     @PostMapping("login")
     @ApiOperation(value = "登录")
     public Object login(@RequestBody User user) {
         User userInDataBase = userService.findByName(user.getUsername());
-        JSONObject jsonObject = new JSONObject();
-        if (userInDataBase == null) {
-            jsonObject.put("message", "用户不存在");
-        } else if (!userService.comparePassword(user.getPassword(), userInDataBase.getPassword())) {
-            jsonObject.put("message", "密码不正确");
+        HashMap<String,String> loginMap = new HashMap<>();
+        if (userInDataBase == null || !userService.comparePassword(user.getPassword(), userInDataBase.getPassword())) {
+            return new ResultVo(ResultCode.REQUESET_INCORRECT);
         } else {
-//            String token = userService.getToken(userInDataBase);
-            jsonObject.put("code",200);
-//            jsonObject.put("token", token);
-            jsonObject.put("uid", userInDataBase.getUId());
-            jsonObject.put("userName", userInDataBase.getUsername());
+            loginMap.put("uid", String.valueOf(userInDataBase.getUId()));
+            loginMap.put("username",userInDataBase.getUsername());
+//            loginMap.put("token", userService.getToken(user));
+            return new ResultVo(loginMap);
         }
-        return jsonObject;
     }
 
 
@@ -78,18 +76,14 @@ public class UserController {
     public Object change( @RequestBody User user,
                           @RequestParam String newPassword) {
         User userInDataBase = userService.findByName(user.getUsername());
-        JSONObject jsonObject = new JSONObject();
         if (userInDataBase == null) {
-            jsonObject.put("message", "用户不存在");
+            return new ResultVo(ResultCode.NOTEXIST_USERNAME);
         } else if (!userService.comparePassword(user.getPassword(), userInDataBase.getPassword())) {
-            jsonObject.put("message", "密码不正确");
+            return new ResultVo(ResultCode.REQUESET_INCORRECT);
         }else {
             userService.changePassword(userInDataBase.getUId(),newPassword);
-            jsonObject.put("code",200);
-            jsonObject.put("uid",userInDataBase.getUId());
-            jsonObject.put("message","修改成功");
+            return new ResultVo(ResultCode.SUCCESS);
         }
-        return jsonObject;
     }
 
 

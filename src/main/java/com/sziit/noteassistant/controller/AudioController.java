@@ -2,6 +2,8 @@ package com.sziit.noteassistant.controller;
 
 
 import com.alibaba.fastjson.JSONObject;
+import com.sziit.noteassistant.http.ResultCode;
+import com.sziit.noteassistant.http.ResultVo;
 import com.sziit.noteassistant.pojo.NoteDetail;
 import com.sziit.noteassistant.pojo.entity.Audio;
 import com.sziit.noteassistant.pojo.entity.Note;
@@ -25,7 +27,6 @@ import java.time.LocalDateTime;
  */
 @Api(tags = "音频")
 @RestController
-@RequestMapping("/audio")
 public class AudioController {
 
     @Autowired
@@ -34,54 +35,38 @@ public class AudioController {
     @GetMapping("findAudio")
     @ApiOperation(value = "查询音频")
     public Object findAudio(@RequestParam Integer aId) {
-        JSONObject jsonObject = new JSONObject();
-        Audio audioInDB = audioService.selectAudioByAid(aId);
-        jsonObject.put("audio",audioInDB);
-        return jsonObject;
+        return new ResultVo(audioService.selectAudioByAid(aId));
     }
 
     @PostMapping("addAudio")
     @ApiOperation(value = "添加音频")
     public Object addAudio(@RequestBody Audio audio) {
-        JSONObject jsonObject = new JSONObject();
         audioService.addAudio(audio);
-        Audio audioInDB = audioService.selectAudioOne(audio);
-        jsonObject.put("audio",audioInDB);
-        return jsonObject;
+        return new ResultVo(audioService.selectAudioOne(audio));
     }
 
     @DeleteMapping("delAudio")
     @ApiOperation(value = "删除音频")
     public Object deleteAudio(@RequestParam Integer aId) {
-        JSONObject jsonObject = new JSONObject();
         audioService.deleteAudio(aId);
-        jsonObject.put("code",200);
-        jsonObject.put("message","删除成功");
-        return jsonObject;
+        return new ResultVo(ResultCode.SUCCESS);
     }
 
     @PutMapping("updateAudio")
     @ApiOperation(value = "修改音频")
     public Object updateAudio(@RequestBody Audio audio){
-        JSONObject jsonObject = new JSONObject();
-        Audio audioInDB = audioService.updateAudio(audio);
-        jsonObject.put("code",200);
-        jsonObject.put("note",audioInDB);
-        return jsonObject;
+        return new ResultVo(audioService.updateAudio(audio));
     }
 
     @DeleteMapping("delAudios")
     @ApiOperation(value = "删除多个音频")
-    public Object deleteAudios(@RequestParam Integer[] aIds){
+    public Object deleteAudios(@RequestParam Integer[] aIds) {
         JSONObject jsonObject = new JSONObject();
         boolean result = audioService.deleteAudios(aIds);
-        if (result){
-            jsonObject.put("code",200);
-            jsonObject.put("message","删除成功");
-        }else {
-            jsonObject.put("message","删除失败");
+        if (result) {
+            return new ResultVo(ResultCode.SUCCESS);
         }
-        return jsonObject;
+        return new ResultVo(ResultCode.BAD_REQUEST);
     }
 }
 

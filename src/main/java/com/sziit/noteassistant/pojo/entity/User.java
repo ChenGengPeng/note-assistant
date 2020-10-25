@@ -19,8 +19,6 @@ import lombok.NoArgsConstructor;
  * @since 2020-10-04
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value="User对象", description="")
 public class User {

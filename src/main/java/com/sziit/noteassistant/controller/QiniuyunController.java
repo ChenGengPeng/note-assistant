@@ -1,5 +1,6 @@
 package com.sziit.noteassistant.controller;
 
+import com.sziit.noteassistant.http.ResultVo;
 import com.sziit.noteassistant.utils.QiniuyunUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -19,14 +20,13 @@ import java.util.UUID;
  * @date 2020/10/3  16:03
  */
 @RestController
-@RequestMapping("/upload")
 @Api(tags = "七牛云上传接口")
 public class QiniuyunController {
 
     @ApiOperation(value = "请求token")
     @PostMapping(value="/getToken")
-    public String getToken() {
-        return QiniuyunUtil.getToken();
+    public Object getToken() {
+        return new ResultVo(QiniuyunUtil.getToken());
     }
 
     @ApiOperation(value = "上传图片到七牛云")
