@@ -51,14 +51,16 @@ CREATE TABLE `information` (
   `photo_url` varchar(32) DEFAULT NULL COMMENT '头像url',
   `u_id` int DEFAULT NULL COMMENT '所属用户',
   PRIMARY KEY (`i_id`),
+  UNIQUE KEY `phone` (`phone`),
   KEY `u_id` (`u_id`),
   CONSTRAINT `information_ibfk_1` FOREIGN KEY (`u_id`) REFERENCES `user` (`u_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 /*Data for the table `information` */
 
 insert  into `information`(`i_id`,`phone`,`profile`,`country`,`province`,`city`,`photo_url`,`u_id`) values 
-(13,'string','string','string','string','string','string',17);
+(13,'string','string','string','string','string','string',17),
+(15,'admin',NULL,NULL,NULL,NULL,NULL,19);
 
 /*Table structure for table `note` */
 
@@ -129,12 +131,13 @@ CREATE TABLE `user` (
   `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户密码',
   PRIMARY KEY (`u_id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 /*Data for the table `user` */
 
 insert  into `user`(`u_id`,`username`,`password`) values 
-(17,'string','$2a$10$vyB4w7kRb6kiB2l5bO9yTO3Wm2WfCmM0RSw8nno8uq3JvRKDDNeiW');
+(17,'string','$2a$10$vyB4w7kRb6kiB2l5bO9yTO3Wm2WfCmM0RSw8nno8uq3JvRKDDNeiW'),
+(19,'admin','$2a$10$iCkwozYCfet/zNSLi7G35ujQE8Lldaj7dYUWELETNUNrG4.3yYhbC');
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
