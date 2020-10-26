@@ -32,7 +32,7 @@ spring:
       max-lifetime: 1800000 # 连接的生命时长（毫秒），超时而且没被使用则被释放（retired），默认:30分钟
       connection-test-query: SELECT 1
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://101.37.30.70/:3306/note_assistant?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf8&autoReconnect=true&allowMultiQueries=true
+    url: jdbc:mysql://101.37.30.70:3306/note_assistant?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf8&autoReconnect=true&allowMultiQueries=true
     username: root
     password: 3412410
   devtools:

@@ -4,6 +4,7 @@ package com.sziit.noteassistant.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.sziit.noteassistant.http.ResultCode;
 import com.sziit.noteassistant.http.ResultVo;
+import com.sziit.noteassistant.pojo.LoginUser;
 import com.sziit.noteassistant.pojo.entity.Information;
 import com.sziit.noteassistant.pojo.entity.User;
 import com.sziit.noteassistant.service.InformationService;
@@ -35,19 +36,23 @@ public class UserController {
     /**
      * 注册用户
      *
-     * @param user
+     * @param loginUser
      * @return
      */
     @PostMapping("register")
     @ApiOperation(value = "注册")
-    public Object register(@RequestBody User user) {
-        if (userService.findByName(user.getUsername()) != null) {
+    public Object register(@RequestBody LoginUser loginUser) {
+        if (informationService.findInformByPhone(loginUser.getPhone()) != null && userService.findByName(loginUser.getPhone()) != null){
             return new ResultVo(ResultCode.DUPLICATE_USERNAME);
         }
+        User user = new User();
+        user.setUsername(loginUser.getPhone());
+        user.setPassword(loginUser.getPassword());
         userService.add(user);
         User userInDataBase = userService.findByName(user.getUsername());
         Information information = new Information();
         information.setUId(userInDataBase.getUId());
+        information.setPhone(user.getUsername());
         informationService.addInform(information);
         User user1 = new User();
         user1.setUsername(userInDataBase.getUsername());
@@ -59,8 +64,12 @@ public class UserController {
     @ApiOperation(value = "登录")
     public Object login(@RequestBody User user) {
         User userInDataBase = userService.findByName(user.getUsername());
+        Information inform = informationService.findInformByPhone(user.getUsername());
+        User user1 = userService.findById(inform.getUId());
         HashMap<String,String> loginMap = new HashMap<>();
         if (userInDataBase == null || !userService.comparePassword(user.getPassword(), userInDataBase.getPassword())) {
+            return new ResultVo(ResultCode.REQUESET_INCORRECT);
+        }else if (user1 == null || !userService.comparePassword(user.getPassword(),user1.getPassword())){
             return new ResultVo(ResultCode.REQUESET_INCORRECT);
         } else {
             loginMap.put("uid", String.valueOf(userInDataBase.getUId()));
@@ -71,9 +80,9 @@ public class UserController {
     }
 
 
-    @PutMapping("change")
+    @PutMapping("changePwd")
     @ApiOperation(value = "修改密码")
-    public Object change( @RequestBody User user,
+    public Object changePwd( @RequestBody User user,
                           @RequestParam String newPassword) {
         User userInDataBase = userService.findByName(user.getUsername());
         if (userInDataBase == null) {
@@ -83,6 +92,26 @@ public class UserController {
         }else {
             userService.changePassword(userInDataBase.getUId(),newPassword);
             return new ResultVo(ResultCode.SUCCESS);
+        }
+    }
+
+    @PutMapping("changeName")
+    @ApiOperation(value = "修改用户名")
+    public Object changeName(@RequestBody User user,
+                             @RequestParam String newUsername){
+        User userInDataBase = userService.findByName(user.getUsername());
+        if (userInDataBase == null){
+            return new ResultVo(ResultCode.NOTEXIST_USERNAME);
+        }else if (userService.findByName(newUsername) != null){
+            return new ResultVo(ResultCode.DUPLICATE_USERNAME);
+        }else {
+            User newUser = new User();
+            newUser.setUId(userInDataBase.getUId());
+            newUser.setUsername(newUsername);
+            User changeUsername = userService.changeUsername(newUser);
+            changeUsername.setPassword(null);
+            return new ResultVo(changeUsername);
+
         }
     }
 

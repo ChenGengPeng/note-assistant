@@ -48,6 +48,13 @@ public class InformationServiceImpl implements InformationService {
     }
 
     @Override
+    public Information findInformByPhone(String phone) {
+        Information information = new Information();
+        information.setPhone(phone);
+        return informationMapper.findOne(information);
+    }
+
+    @Override
     public void deleteByUid(Integer uid) {
         informationMapper.deletByUid(uid);
     }

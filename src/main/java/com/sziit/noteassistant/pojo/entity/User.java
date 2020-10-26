@@ -34,8 +34,6 @@ public class User {
     @ApiModelProperty(value = "用户密码")
     private String password;
 
-
-
     protected Serializable pkVal() {
         return this.uId;
     }

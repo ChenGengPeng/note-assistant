@@ -25,6 +25,10 @@
         <if test="uId!= null">
             and u_Id = #{uId}
         </if>
+        <if test="phone!= null">
+            and phone = #{phone}
+        </if>
+
     </sql>
 
     <select id="findOne" resultMap="BaseResultMap">

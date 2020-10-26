@@ -75,5 +75,15 @@ public class UserServiceImpl implements UserService {
         return passwordEncoder.matches(newPassword,oldPassword);
     }
 
+    @Override
+    public User changeUsername(User user) {
+        int result = userMapper.updateUser(user);
+        if (result == 1){
+            return userMapper.findOne(user);
+        }else {
+            throw new RuntimeException("修改失败");
+        }
+    }
+
 
 }

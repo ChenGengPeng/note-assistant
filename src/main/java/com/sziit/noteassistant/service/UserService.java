@@ -23,6 +23,8 @@ public interface UserService{
 
    public boolean comparePassword(String newPassword,String oldPassword);
 
+   public User changeUsername(User user);
+
 
 
 }

@@ -17,7 +17,7 @@
     </sql>
     <sql id="find_user_where">
         <if test="uId != null">
-            and uid = #{uId}
+            and u_id = #{uId}
         </if>
         <if test="username != null">
             and username = #{username}
