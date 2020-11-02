@@ -70,10 +70,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
                 .and()
                 .httpBasic()
                 .and()
-                .logout();
+                .logout()
+                .and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+//                .disable();
         http.addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
-        http.sessionManagement().disable();
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
