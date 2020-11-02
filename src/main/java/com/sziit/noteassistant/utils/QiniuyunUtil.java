@@ -217,7 +217,7 @@ public class QiniuyunUtil {
 
     /**
      * 断点续上传
-     * @param localFilePathd
+     * @param localFilePath
      * @param fileName
      * @return
      */

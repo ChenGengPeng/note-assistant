@@ -3,7 +3,6 @@ package com.sziit.noteassistant.utils;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.sziit.noteassistant.pojo.Jwt;
 import com.sziit.noteassistant.pojo.entity.User;
 import io.jsonwebtoken.Claims;
@@ -12,9 +11,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -43,6 +40,11 @@ public class JwtUtils implements Serializable {
         instance.add(Calendar.SECOND, Math.toIntExact(EXPIRATION_TIME));
         builder.withExpiresAt(instance.getTime());
         return builder.sign(Algorithm.HMAC256(SECRET)).toString();
+    }
+
+    public static User  getUserBytoken(){
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return (User) authentication.getPrincipal();
     }
 
     /**
@@ -131,10 +133,5 @@ public class JwtUtils implements Serializable {
                 username.equals(user.getUsername())
                 && !isTokenExpired(token)
                 );
-    }
-
-    public static User  getUserBytoken(){
-        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return (User) authentication.getPrincipal();
     }
 }
