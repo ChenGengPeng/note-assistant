@@ -3,7 +3,6 @@ package com.sziit.noteassistant.controller;
 
 import com.sziit.noteassistant.http.ResultCode;
 import com.sziit.noteassistant.http.ResultVo;
-import com.sziit.noteassistant.pojo.AuthToken;
 import com.sziit.noteassistant.pojo.LoginUser;
 import com.sziit.noteassistant.pojo.entity.Information;
 import com.sziit.noteassistant.pojo.entity.User;
@@ -15,8 +14,6 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -71,7 +68,9 @@ public class UserController {
         }else {
             String token = jwtUtils.generateToken(userInDataBase);
             logger.info("登录成功，获取token："+token);
-            return new ResultVo(new AuthToken(token,userInDataBase.getUsername()));
+            Map<String,String> authToken = new HashMap<>();
+            authToken.put("token",token);
+            return new ResultVo(authToken);
         }
     }
 
