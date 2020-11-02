@@ -18,8 +18,9 @@
     <properties>
         <java.version>1.8</java.version>
         <fastjson.version>1.2.47</fastjson.version>
-        <mybatis.plus.version>3.3.0</mybatis.plus.version>
+        <mybatis.plus.version>3.4.0</mybatis.plus.version>
         <docker.image.prefix>cgp</docker.image.prefix>
+        <sqlhelper.version>3.2.3</sqlhelper.version>
     </properties>
 
     <dependencies>
@@ -156,11 +157,6 @@
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
             <version>0.9.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.mybatis</groupId>
-            <artifactId>mybatis-typehandlers-jsr310</artifactId>
-            <version>1.0.2</version>
         </dependency>
     </dependencies>
 

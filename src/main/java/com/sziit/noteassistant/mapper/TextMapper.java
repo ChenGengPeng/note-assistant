@@ -19,14 +19,14 @@ public interface TextMapper{
 
     public List<Text> selectTextByNid(Integer nId);
 
-    public void addText(Text text);
+    public int addText(Text text);
 
 
     public Text selectOne(Text text);
     @Delete("delete from text where t_id = #{tId}")
     int deleteText(Integer tId);
 
-    void updateText(Text text);
+    int updateText(Text text);
 
     Text selectTextByTid(Integer tId);
 }

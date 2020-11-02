@@ -54,13 +54,14 @@ CREATE TABLE `information` (
   UNIQUE KEY `phone` (`phone`),
   KEY `u_id` (`u_id`),
   CONSTRAINT `information_ibfk_1` FOREIGN KEY (`u_id`) REFERENCES `user` (`u_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 /*Data for the table `information` */
 
 insert  into `information`(`i_id`,`phone`,`profile`,`country`,`province`,`city`,`photo_url`,`u_id`) values 
 (13,'string','string','string','string','string','string',17),
-(15,'admin',NULL,NULL,NULL,NULL,NULL,19);
+(15,'admin',NULL,NULL,NULL,NULL,NULL,19),
+(16,NULL,NULL,NULL,NULL,NULL,NULL,20);
 
 /*Table structure for table `note` */
 
@@ -68,8 +69,10 @@ DROP TABLE IF EXISTS `note`;
 
 CREATE TABLE `note` (
   `n_id` int NOT NULL AUTO_INCREMENT COMMENT '笔记id',
-  `n_name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '笔记名称',
+  `title` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '笔记名称',
+  `favorite` tinyint(1) DEFAULT '0' COMMENT '是否收藏',
   `createtime` datetime(6) DEFAULT NULL COMMENT '创建时间',
+  `summary` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci COMMENT '摘要',
   `u_id` int DEFAULT NULL COMMENT '所属用户id',
   PRIMARY KEY (`n_id`),
   KEY `u_id` (`u_id`),
@@ -78,9 +81,9 @@ CREATE TABLE `note` (
 
 /*Data for the table `note` */
 
-insert  into `note`(`n_id`,`n_name`,`createtime`,`u_id`) values 
-(14,'string','1975-01-31 09:03:25.977000',17),
-(15,'test2','2020-10-25 18:34:23.953000',17);
+insert  into `note`(`n_id`,`title`,`favorite`,`createtime`,`summary`,`u_id`) values 
+(14,'string',0,'1975-01-31 09:03:25.977000',NULL,17),
+(15,'test2',0,'2020-10-25 18:34:23.953000',NULL,17);
 
 /*Table structure for table `picture` */
 
@@ -129,15 +132,15 @@ CREATE TABLE `user` (
   `u_id` int NOT NULL AUTO_INCREMENT COMMENT '用户id',
   `username` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户名',
   `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户密码',
-  PRIMARY KEY (`u_id`),
-  UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  PRIMARY KEY (`u_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 /*Data for the table `user` */
 
 insert  into `user`(`u_id`,`username`,`password`) values 
 (17,'string','$2a$10$vyB4w7kRb6kiB2l5bO9yTO3Wm2WfCmM0RSw8nno8uq3JvRKDDNeiW'),
-(19,'admin','$2a$10$iCkwozYCfet/zNSLi7G35ujQE8Lldaj7dYUWELETNUNrG4.3yYhbC');
+(19,'admin','$2a$10$iCkwozYCfet/zNSLi7G35ujQE8Lldaj7dYUWELETNUNrG4.3yYhbC'),
+(20,'13713552233','$2a$10$WHd//qjfpjFshpRaYk05KuOa5xg4khToMzlI4az9i17s90AbN2rpq');
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

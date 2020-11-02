@@ -46,6 +46,10 @@ public class Information {
     @ApiModelProperty(value = "所属用户id")
     private Integer uId;
 
+    public Information(String phone, Integer uId) {
+        this.phone = phone;
+        this.uId = uId;
+    }
 
     protected Serializable pkVal() {
         return this.iId;

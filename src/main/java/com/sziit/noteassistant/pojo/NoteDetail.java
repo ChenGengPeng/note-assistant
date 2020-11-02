@@ -17,7 +17,6 @@ import java.util.List;
  * @date 2020/10/12  19:50
  */
 @Data
-@EqualsAndHashCode(callSuper = false)
 @ApiModel(value="笔记详情", description="")
 @NoArgsConstructor
 @AllArgsConstructor

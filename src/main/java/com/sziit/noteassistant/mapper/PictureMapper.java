@@ -19,14 +19,14 @@ public interface PictureMapper{
 
     public List<Picture> selectPictureByNid(Integer nId);
 
-    public void addPicture(Picture picture);
+    public int addPicture(Picture picture);
 
     public Picture selectPictureByUrl(String url);
 
     @Delete("delete from picture where p_id = #{pId}")
     int deletePicture(Integer pId);
 
-    void updatePicture(Picture picture);
+    int updatePicture(Picture picture);
 
     Picture selectPictureByPid(Integer pId);
 

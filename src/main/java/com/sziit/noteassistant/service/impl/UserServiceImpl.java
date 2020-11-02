@@ -6,14 +6,18 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.sziit.noteassistant.mapper.UserMapper;
 import com.sziit.noteassistant.pojo.entity.User;
 import com.sziit.noteassistant.service.UserService;
+import com.sziit.noteassistant.utils.TransactionalJug;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,8 +29,8 @@ import java.util.stream.Collectors;
  * @author CGP
  * @since 2020-10-04
  */
-@Service
-public class UserServiceImpl implements UserService {
+@Service(value = "userService")
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     private UserMapper userMapper;
     private  BCryptPasswordEncoder passwordEncoder;
@@ -40,10 +44,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public User add(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userMapper.add(user);
-        User user1 = new User();
-        user1.setUsername(user.getUsername());
-        return userMapper.findOne(user1);
+        TransactionalJug.JudgeTransaction(userMapper.add(user));
+        return userMapper.findByUsername(user.getUsername());
     }
 
     @Override
@@ -59,15 +61,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByName(String username) {
-        User user = new User();
-        user.setUsername(username);
-        return userMapper.findOne(user);
+        return userMapper.findByUsername(username);
     }
 
     @Override
-    public void changePassword(Integer id,String newPassword) {
-        newPassword = passwordEncoder.encode(newPassword);
-        userMapper.changePassword(id,newPassword);
+    public void changePassword(User user) {
+        TransactionalJug.JudgeTransaction(userMapper.changePassword(user.getUId(),
+                passwordEncoder.encode(user.getPassword())));
     }
 
     @Override
@@ -77,13 +77,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User changeUsername(User user) {
-        int result = userMapper.updateUser(user);
-        if (result == 1){
-            return userMapper.findOne(user);
-        }else {
-            throw new RuntimeException("修改失败");
-        }
+        TransactionalJug.JudgeTransaction(userMapper.updateUser(user));
+        return userMapper.findOne(user);
+
     }
 
 
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userMapper.findByUsername(username);
+        if (user == null){
+            throw new UsernameNotFoundException("用户名无效" + username);
+        }
+        return new org.springframework.security.core.userdetails.User(user.getUsername(),user.getPassword(),getAuthority());
+    }
+
+    private List<SimpleGrantedAuthority> getAuthority() {
+        return Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN"));
+    }
 }

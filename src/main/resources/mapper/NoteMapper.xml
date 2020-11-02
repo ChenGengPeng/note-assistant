@@ -6,7 +6,9 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.sziit.noteassistant.pojo.entity.Note">
         <id column="n_id" property="nId" />
-        <result column="n_name" property="nName" />
+        <result column="title" property="title" />
+        <result column="favorite" property="favorite"/>
+        <result column="summary" property="summary"/>
         <result column="createtime" property="createtime" />
         <result column="u_id" property="uId" />
     </resultMap>
@@ -18,51 +20,70 @@
     </resultMap>-->
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        n_id, n_name, createtime, u_id
+        n_id, title , favorite,createtime,summary, u_id
     </sql>
 
     <sql id="find_note_where">
-        <if test="nId != null">
-            and n_id = #{nId}
+        <if test="title != null">
+            and n.title = #{title}
         </if>
-        <if test="nName != null">
-            and n_name = #{nName}
+        <if test="favorite!=null">
+            and n.favorite = #{favorite}
         </if>
-        <if test="createtime != null">
-            and createtime = #{createtime}
+        <if test="createtime!=null">
+            and n.createtime = #{createtime}
         </if>
         <if test="uId != null">
-            and u_id = #{uId}
+            and n.u_id = #{uId}
         </if>
     </sql>
 
     <select id="selectNotesByUid" resultType="com.sziit.noteassistant.pojo.entity.Note">
-        select n.n_id,n.n_name,n.createtime from note n where n.u_id = #{uId}
+        select n.n_id,n.title,n.favorite,n.createtime,n.summary,n.u_id from note n where n.u_id = #{uId} order by n.createtime DESC
+    </select>
+
+    <select id="getFavoriteNote" resultMap="BaseResultMap">
+        select n.n_id,n.title ,n.favorite,n.createtime ,n.summary,n.u_id from note n where n.u_id = #{uId} and n.favorite = true
     </select>
 
     <insert id="addNote" useGeneratedKeys="true" keyProperty="nId">
-        insert into note(n_name,createtime,u_id)
-        values (#{nName},#{createtime},#{uId})
+        insert into note(title ,favorite,createtime,u_id)
+        values (#{title},#{favorite},#{createtime},#{uId})
     </insert>
 
     <update id="updateNote">
         update note
         <set>
-            <if test="nName != null">
-                note.n_name = #{nName},
+            <if test="title != null">
+                note.title = #{title},
             </if>
             <if test="createtime != null">
                 note.createtime = #{createtime},
+            </if>
+            <if test="favorite != null">
+                note.favorite = #{favorite},
+            </if>
+            <if test="summary != null">
+                note.summary = #{summary},
             </if>
         </set>
         where note.n_id = #{nId}
     </update>
 
     <select id="findOne" resultMap="BaseResultMap">
-        select n.n_id,n.n_name,n.createtime,n.u_id from note n
+        select n.n_id,n.title,n.favorite,n.createtime,n.summary,n.u_id from note n
         <where>
             <include refid="find_note_where"></include>
         </where>
     </select>
+    <select id="selectNotesByUidASC" resultType="com.sziit.noteassistant.pojo.entity.Note">
+        select n.n_id,n.title,n.favorite,n.createtime,n.summary,n.u_id  from note n where n.u_id = #{uId} order by n.createtime ASC
+    </select>
 
+    <select id="selectFavNotesByUid" resultType="com.sziit.noteassistant.pojo.entity.Note">
+        select n.n_id,n.title,n.favorite,n.createtime,n.summary,n.u_id  from note n where n.u_id = #{uId} and n.favorite = true order by n.createtime Desc
+    </select>
+    <select id="selectFavNotesByUidASC" resultType="com.sziit.noteassistant.pojo.entity.Note">
+        select n.n_id,n.title,n.favorite,n.createtime,n.summary,n.u_id  from note n where n.u_id = #{uId} and n.favorite = true order by n.createtime ASC
+    </select>
 </mapper>

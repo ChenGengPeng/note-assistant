@@ -56,6 +56,8 @@ mybatis-plus:
   configuration:
     #    驼峰命名
     map-underscore-to-camel-case: true
+      #打印sql信息到控制台（开发时用）
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   global-config:
     db-config:
       #      设置逻辑删除
@@ -68,8 +70,20 @@ logging:
     org:
       example:
         security: debug
-#jwt:
-#  SECRET: (CGP:)_$^3412410^%$_(ZHJ:)_@@++--(ZZS:)_++++_.sds_(QGR:)
-#  EXPIRATION_TIME: 86400
-#  TOKEN_PREFIX: Bearer
-#  AUTHORIZATION: Authorization
+jwt:
+  SECRET: (CGP:)_$^3412410^%$_(ZHJ:)_@@++--(ZZS:)_++++_.sds_(QGR:)
+  EXPIRATION_TIME: 86400
+  TOKEN_PREFIX: Bearer
+  AUTHORIZATION: Authorization
+
+#sqlhelper:
+#  mybatis:
+#    instrumentor:
+#      cache-instrumented-sql: true
+#      subquery-paging-start-flag: "[PAGING_StART]"
+#      subquery-paging-end-flag: "[PAGING_END]"
+#    pagination:
+#      count: true
+#      default-page-size: 10
+#      use-last-page-if-page-no-out: true
+#      count-suffix: _COUNT

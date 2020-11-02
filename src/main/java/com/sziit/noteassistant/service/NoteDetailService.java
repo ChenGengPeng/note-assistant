@@ -11,4 +11,5 @@ public interface NoteDetailService {
     public NoteDetail selectNoteDetail(Integer nId);
     public NoteDetail addNoteDetail(NoteDetail noteDetail);
     public NoteDetail deleteNoteDetails(NoteDetail noteDetail);
+    public NoteDetail editorNoteDetails(NoteDetail noteDetail);
 }

@@ -1,9 +1,14 @@
 package com.sziit.noteassistant.controller;
 
+import com.sziit.noteassistant.http.ResultCode;
 import com.sziit.noteassistant.http.ResultVo;
+import com.sziit.noteassistant.pojo.entity.User;
+import com.sziit.noteassistant.utils.JwtUtils;
 import com.sziit.noteassistant.utils.QiniuyunUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,10 +27,16 @@ import java.util.UUID;
 @RestController
 @Api(tags = "七牛云上传接口")
 public class QiniuyunController {
+    protected Log logger = LogFactory.getLog(this.getClass());
 
     @ApiOperation(value = "请求token")
     @PostMapping(value="/getToken")
     public Object getToken() {
+        User user = JwtUtils.getUserBytoken();
+        if(user.getUsername()==null){
+            logger.error("未登录");
+            return new ResultVo(ResultCode.UNAUTHORIZED);
+        }
         return new ResultVo(QiniuyunUtil.getToken());
     }
 

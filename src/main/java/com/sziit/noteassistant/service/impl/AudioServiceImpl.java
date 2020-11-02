@@ -4,6 +4,7 @@ import com.sziit.noteassistant.pojo.entity.Audio;
 import com.sziit.noteassistant.mapper.AudioMapper;
 import com.sziit.noteassistant.service.AudioService;
 
+import com.sziit.noteassistant.utils.TransactionalJug;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,18 +31,18 @@ public class AudioServiceImpl implements AudioService{
 
     @Override
     public void addAudio(Audio audio) {
-        audioMapper.addAudio(audio);
+        TransactionalJug.JudgeTransaction(audioMapper.addAudio(audio));
     }
 
     @Override
     public Audio updateAudio(Audio audio) {
-        audioMapper.updateAudio(audio);
+        TransactionalJug.JudgeTransaction(audioMapper.updateAudio(audio));
         return audioMapper.selectAudioOne(audio);
     }
 
     @Override
     public void deleteAudio(Integer aId) {
-        audioMapper.deleteAudio(aId);
+        TransactionalJug.JudgeTransaction(audioMapper.deleteAudio(aId));
     }
 
     @Override
@@ -49,6 +50,7 @@ public class AudioServiceImpl implements AudioService{
         int sum = 0;
         for (Integer aId: aIds) {
             int result = audioMapper.deleteAudio(aId);
+            TransactionalJug.JudgeTransaction(result);
             sum += result;
         }
         return sum == aIds.length;
@@ -62,6 +64,11 @@ public class AudioServiceImpl implements AudioService{
     @Override
     public Audio selectAudioOne(Audio audio) {
         return audioMapper.selectAudioOne(audio);
+    }
+
+    @Override
+    public List<Audio> selectAudiosByNid(Integer nId) {
+        return audioMapper.selectAudiosByNid(nId);
     }
 
 }

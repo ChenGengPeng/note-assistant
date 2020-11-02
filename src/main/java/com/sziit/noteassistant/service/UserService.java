@@ -19,7 +19,7 @@ public interface UserService{
 
    public User findByName(String username);
 
-   public void changePassword(Integer id,String newPassword);
+   public void changePassword(User user);
 
    public boolean comparePassword(String newPassword,String oldPassword);
 

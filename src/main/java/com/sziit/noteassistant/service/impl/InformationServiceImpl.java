@@ -7,6 +7,7 @@ import com.sziit.noteassistant.pojo.entity.Audio;
 import com.sziit.noteassistant.pojo.entity.Information;
 import com.sziit.noteassistant.service.AudioService;
 import com.sziit.noteassistant.service.InformationService;
+import com.sziit.noteassistant.utils.TransactionalJug;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +26,7 @@ public class InformationServiceImpl implements InformationService {
     private InformationMapper informationMapper;
     @Override
     public Information addInform(Information information) {
-        informationMapper.add_infor(information);
+        TransactionalJug.JudgeTransaction(informationMapper.add_infor(information));
         Information information1 = new Information();
         information1.setUId(information.getUId());
         return informationMapper.findOne(information1);
@@ -56,6 +57,6 @@ public class InformationServiceImpl implements InformationService {
 
     @Override
     public void deleteByUid(Integer uid) {
-        informationMapper.deletByUid(uid);
+        TransactionalJug.JudgeTransaction(informationMapper.deletByUid(uid));
     }
 }

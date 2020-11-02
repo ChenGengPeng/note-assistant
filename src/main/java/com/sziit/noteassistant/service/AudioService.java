@@ -28,4 +28,6 @@ public interface AudioService  {
     public Audio selectAudioByAid(Integer aId);
 
     Audio selectAudioOne(Audio audio);
+
+    List<Audio> selectAudiosByNid(Integer nId);
 }

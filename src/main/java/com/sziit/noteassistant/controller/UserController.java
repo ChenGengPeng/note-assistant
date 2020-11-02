@@ -1,17 +1,22 @@
 package com.sziit.noteassistant.controller;
 
 
-import com.alibaba.fastjson.JSONObject;
 import com.sziit.noteassistant.http.ResultCode;
 import com.sziit.noteassistant.http.ResultVo;
+import com.sziit.noteassistant.pojo.AuthToken;
 import com.sziit.noteassistant.pojo.LoginUser;
 import com.sziit.noteassistant.pojo.entity.Information;
 import com.sziit.noteassistant.pojo.entity.User;
 import com.sziit.noteassistant.service.InformationService;
 import com.sziit.noteassistant.service.UserService;
+import com.sziit.noteassistant.utils.JwtUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -28,11 +33,14 @@ import java.util.Map;
 @Api(tags = "用户")
 @RestController
 public class UserController {
+    protected Log logger = LogFactory.getLog(this.getClass());
 
     @Autowired
     private UserService userService;
     @Autowired
     private InformationService informationService;
+    @Autowired
+    private JwtUtils jwtUtils;
     /**
      * 注册用户
      *
@@ -42,76 +50,63 @@ public class UserController {
     @PostMapping("register")
     @ApiOperation(value = "注册")
     public Object register(@RequestBody LoginUser loginUser) {
-        if (informationService.findInformByPhone(loginUser.getPhone()) != null && userService.findByName(loginUser.getPhone()) != null){
-            return new ResultVo(ResultCode.DUPLICATE_USERNAME);
-        }
-        User user = new User();
-        user.setUsername(loginUser.getPhone());
-        user.setPassword(loginUser.getPassword());
-        userService.add(user);
-        User userInDataBase = userService.findByName(user.getUsername());
-        Information information = new Information();
-        information.setUId(userInDataBase.getUId());
-        information.setPhone(user.getUsername());
-        informationService.addInform(information);
-        User user1 = new User();
-        user1.setUsername(userInDataBase.getUsername());
-        user1.setUId(userInDataBase.getUId());
-        return new ResultVo(user1);
+       if (informationService.findInformByPhone(loginUser.getPhone()) != null){
+           logger.error("手机号已经被注册");
+           return new ResultVo(ResultCode.BAD_REQUEST);
+       }
+        User addUser = userService.add(new User(loginUser.getPhone(), loginUser.getPassword()));
+       informationService.addInform(new Information(loginUser.getPhone(),addUser.getUId()));
+       logger.info("用户注册成功，用户名为："+addUser.getUsername());
+       addUser.setPassword(null);
+        return new ResultVo(addUser);
     }
 
     @PostMapping("login")
     @ApiOperation(value = "登录")
-    public Object login(@RequestBody User user) {
-        User userInDataBase = userService.findByName(user.getUsername());
-        Information inform = informationService.findInformByPhone(user.getUsername());
-        User user1 = userService.findById(inform.getUId());
-        HashMap<String,String> loginMap = new HashMap<>();
-        if (userInDataBase == null || !userService.comparePassword(user.getPassword(), userInDataBase.getPassword())) {
-            return new ResultVo(ResultCode.REQUESET_INCORRECT);
-        }else if (user1 == null || !userService.comparePassword(user.getPassword(),user1.getPassword())){
-            return new ResultVo(ResultCode.REQUESET_INCORRECT);
-        } else {
-            loginMap.put("uid", String.valueOf(userInDataBase.getUId()));
-            loginMap.put("username",userInDataBase.getUsername());
-//            loginMap.put("token", userService.getToken(user));
-            return new ResultVo(loginMap);
+    public Object login(@RequestBody LoginUser loginUser) {
+        User userInDataBase = userService.findById(informationService.findInformByPhone(loginUser.getPhone()).getUId());
+        if (userInDataBase == null || !userService.comparePassword(loginUser.getPassword(),userInDataBase.getPassword())){
+            logger.error("用户名或者密码错误");
+            return new ResultVo(ResultCode.BAD_REQUEST);
+        }else {
+            String token = jwtUtils.generateToken(userInDataBase);
+            logger.info("登录成功，获取token："+token);
+            return new ResultVo(new AuthToken(token,userInDataBase.getUsername()));
         }
     }
 
 
     @PutMapping("changePwd")
     @ApiOperation(value = "修改密码")
-    public Object changePwd( @RequestBody User user,
-                          @RequestParam String newPassword) {
-        User userInDataBase = userService.findByName(user.getUsername());
-        if (userInDataBase == null) {
-            return new ResultVo(ResultCode.NOTEXIST_USERNAME);
-        } else if (!userService.comparePassword(user.getPassword(), userInDataBase.getPassword())) {
-            return new ResultVo(ResultCode.REQUESET_INCORRECT);
+    public Object changePwd(@RequestParam String oldPassword,@RequestParam String newPassword) {
+        User user = jwtUtils.getUserBytoken();
+        User userInDB = userService.findById(user.getUId());
+        if (user.getUsername() == null || userInDB == null) {
+            logger.error("未登录");
+            return new ResultVo(ResultCode.UNAUTHORIZED);
+        } else if (!userService.comparePassword(oldPassword,userInDB.getPassword())) {
+            logger.error("密码错误");
+            return new ResultVo(ResultCode.SUCCESS,"密码错误");
         }else {
-            userService.changePassword(userInDataBase.getUId(),newPassword);
+            userInDB.setPassword(newPassword);
+            userService.changePassword(userInDB);
+            logger.info("密码修改成功");
             return new ResultVo(ResultCode.SUCCESS);
         }
     }
 
     @PutMapping("changeName")
     @ApiOperation(value = "修改用户名")
-    public Object changeName(@RequestBody User user,
-                             @RequestParam String newUsername){
-        User userInDataBase = userService.findByName(user.getUsername());
-        if (userInDataBase == null){
-            return new ResultVo(ResultCode.NOTEXIST_USERNAME);
-        }else if (userService.findByName(newUsername) != null){
-            return new ResultVo(ResultCode.DUPLICATE_USERNAME);
+    public Object changeName(@RequestParam String newUsername){
+        User user = jwtUtils.getUserBytoken();
+        User userInDataBase = userService.findById(user.getUId());
+        if (userInDataBase == null || user.getUsername() == null){
+            logger.error("未登录或者用户不存在");
+            return new ResultVo(ResultCode.UNAUTHORIZED);
         }else {
-            User newUser = new User();
-            newUser.setUId(userInDataBase.getUId());
-            newUser.setUsername(newUsername);
-            User changeUsername = userService.changeUsername(newUser);
-            changeUsername.setPassword(null);
-            return new ResultVo(changeUsername);
-
+            userInDataBase.setUsername(newUsername);
+            logger.info("用户名修改成功");
+            return new ResultVo(userService.changeUsername(userInDataBase).getUsername());
         }
     }
 

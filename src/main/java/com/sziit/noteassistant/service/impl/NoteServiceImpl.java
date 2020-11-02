@@ -1,13 +1,16 @@
 package com.sziit.noteassistant.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sziit.noteassistant.mapper.NoteMapper;
+import com.sziit.noteassistant.pojo.NoteDetail;
 import com.sziit.noteassistant.pojo.entity.Note;
+import com.sziit.noteassistant.service.NoteDetailService;
 import com.sziit.noteassistant.service.NoteService;
 
+import com.sziit.noteassistant.utils.TransactionalJug;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * <p>
@@ -20,42 +23,77 @@ import java.util.List;
 @Service
 public class NoteServiceImpl implements NoteService {
 
+    private final static Integer pageSize = 10;
+
     @Autowired
     private NoteMapper noteMapper;
-
+    @Autowired
+    private NoteDetailService noteDetailService;
 
     @Override
-    public List<Note> selectNotesByUid(Integer uId){
-        return noteMapper.selectNotesByUid(uId);
+    public IPage<Note> selectNotesByUid(Integer uId,Integer pageId){
+        Page<Note> page = new Page(pageId,pageSize);
+        page.setRecords(noteMapper.selectNotesByUid(page,uId));
+        return page;
     }
 
     @Override
-    public void addNote(Note note) {
-        noteMapper.addNote(note);
+    public IPage<Note> selectNotesByUidASC(Integer uId,Integer pageId) {
+        Page<Note> page = new Page(pageId,pageSize);
+        page.setRecords(noteMapper.selectNotesByUidASC(page,uId));
+        return page;
     }
 
     @Override
-    public void updateNote(Note note) {
-        noteMapper.updateNote(note);
+    public Note addNote(Note note) {
+        TransactionalJug.JudgeTransaction(noteMapper.addNote(note));
+        return findOne(note);
+    }
+
+    @Override
+    public Note updateNote(Note note) {
+        TransactionalJug.JudgeTransaction(noteMapper.updateNote(note));
+        return noteMapper.selectNoteByNId(note.getNId());
     }
 
     @Override
     public void deleteNote(Integer nId) {
-        noteMapper.deleteNote(nId);
+        TransactionalJug.JudgeTransaction(noteMapper.deleteNote(nId));
     }
 
     @Override
     public boolean deleteNotes(Integer[] nIds) {
-        int sum = 0;
         for(Integer nId : nIds){
-            int result = noteMapper.deleteNote(nId);
-            sum += result;
+            deleteNote(nId);
         }
-        return sum == nIds.length;
+        return true;
     }
 
+    @Override
     public Note findOne(Note note){
         return noteMapper.findOne(note);
+    }
+
+
+    @Override
+    public Note changeFavState(Note note) {
+        Note noteInDB = noteMapper.selectNoteByNId(note.getNId());
+        noteInDB.setFavorite(note.getFavorite());
+        return updateNote(noteInDB);
+    }
+
+    @Override
+    public IPage<Note> selectFavNotesByUid(Integer uId, Integer pageId) {
+        Page<Note> page = new Page<>(pageId,pageSize);
+        page.setRecords(noteMapper.selectFavNotesByUid(page,uId));
+        return page;
+    }
+
+    @Override
+    public IPage<Note> selectFavNotesByUidASC(Integer uId, Integer pageId) {
+        Page<Note> page = new Page<>(pageId,pageSize);
+        page.setRecords(noteMapper.selectNotesByUidASC(page,uId));
+        return page;
     }
 
 }

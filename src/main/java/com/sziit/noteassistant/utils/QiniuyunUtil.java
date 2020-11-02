@@ -2,11 +2,13 @@ package com.sziit.noteassistant.utils;
 
 import com.google.gson.Gson;
 import com.qiniu.common.QiniuException;
+import com.qiniu.common.Zone;
 import com.qiniu.http.Response;
 import com.qiniu.storage.Configuration;
 import com.qiniu.storage.Region;
 import com.qiniu.storage.UploadManager;
 import com.qiniu.storage.model.DefaultPutRet;
+import com.qiniu.storage.persistent.FileRecorder;
 import com.qiniu.util.*;
 import com.sziit.noteassistant.http.QiniuyunCode;
 import com.sziit.noteassistant.qiniuyun.QiniuyunUpload;
@@ -18,6 +20,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -132,7 +138,6 @@ public class QiniuyunUtil {
     /**
      *  base64方式上传
      * @param base64 ：图片编码
-     * @param fileName：图片名称
      * @return
      * @throws Exception
      */
@@ -176,6 +181,86 @@ public class QiniuyunUtil {
         return response.isSuccessful()?(DOMAIN  + fileName):"Up Img Failed";*/
     }
 
+    /**
+     * 简单上传
+     * @param localFilePath
+     * @param fileName
+     * @return
+     * @throws QiniuException
+     */
+    public static String easyUpLoad(File localFilePath, String fileName) throws QiniuException {
+        return intoResult(null,localFilePath,null, fileName,null);
+    }
+
+    /**
+     * 字节数组上传
+     * @param uploadBytes
+     * @param fileName
+     * @return
+     * @throws QiniuException
+     */
+    public static String byteUpLoad(byte[] uploadBytes, String fileName) throws QiniuException {
+        return intoResult(uploadBytes,null,null, fileName,null);
+    }
+
+
+    /**
+     * 数据流上传
+     * @param byteInputStream
+     * @param fileName
+     * @return
+     * @throws QiniuException
+     */
+    public static String byteArrayInputStreamUpLoad(ByteArrayInputStream byteInputStream, String fileName) throws QiniuException {
+        return intoResult(null,null,byteInputStream, fileName,null);
+    }
+
+    /**
+     * 断点续上传
+     * @param localFilePathd
+     * @param fileName
+     * @return
+     */
+    public static String recorderUpLoad(File localFilePath, String fileName) {
+        String localTempDir = Paths.get(System.getenv("java.io.tmpdir"), BUCKET).toString();
+        try {
+            //设置断点续传文件进度保存目录
+            FileRecorder fileRecorder = new FileRecorder(localTempDir);
+            return intoResult(null,localFilePath,null,fileName,fileRecorder);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return ex.getMessage();
+        }
+    }
+    private static String intoResult(byte[] uploadBytes, File localFilePath, ByteArrayInputStream byteInputStream, String fileName, FileRecorder fileRecorder) throws QiniuException {
+        Configuration cfg = new Configuration(region);
+        UploadManager uploadManager = new UploadManager(cfg, fileRecorder);
+//        String substring = fileName.substring(fileName.lastIndexOf("."));
+        String key = "hlm/images/"+fileName;
+        Auth auth = Auth.create(ACCESS_KEY, SECRET_KEY);
+        String upToken = auth.uploadToken(BUCKET);
+        Response response = null;
+        try {
+            if(uploadBytes != null && localFilePath == null && byteInputStream == null){
+                response = uploadManager.put(uploadBytes, key, upToken);
+            }
+            if(localFilePath != null && uploadBytes == null && byteInputStream == null){
+                response = uploadManager.put(localFilePath, key, upToken);
+            }
+            if(byteInputStream != null  && uploadBytes == null && localFilePath == null){
+                response = uploadManager.put(byteInputStream,key,upToken,null, null);
+            }
+            if(response == null){
+                return "参数错误";
+            }
+            //解析上传成功的结果
+            DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
+            return putRet.key;
+        } catch (QiniuException ex) {
+            Response r = ex.response;
+            throw new QiniuException(r);
+        }
+    }
 
 
 }

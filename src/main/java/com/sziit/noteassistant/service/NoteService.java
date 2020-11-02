@@ -1,9 +1,8 @@
 package com.sziit.noteassistant.service;
 
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.sziit.noteassistant.pojo.entity.Note;
-
-import java.util.List;
 
 /**
  * <p>
@@ -15,15 +14,22 @@ import java.util.List;
  */
 public interface NoteService  {
 
-    public List<Note> selectNotesByUid(Integer uId);
+    public IPage<Note> selectNotesByUid(Integer uId, Integer pageId);
 
-    public void addNote(Note note);
+    public IPage<Note> selectNotesByUidASC(Integer uId,Integer pageId);
 
-    void updateNote(Note note);
+    public Note addNote(Note note);
+
+    Note updateNote(Note note);
 
     void deleteNote(Integer nId);
 
     boolean deleteNotes(Integer[] nIds);
 
     public Note findOne(Note note);
+
+    public Note changeFavState(Note note);
+
+    IPage<Note> selectFavNotesByUid(Integer uId, Integer pageId);
+    IPage<Note> selectFavNotesByUidASC(Integer uId, Integer pageId);
 }

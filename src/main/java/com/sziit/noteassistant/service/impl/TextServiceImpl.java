@@ -4,6 +4,7 @@ import com.sziit.noteassistant.pojo.entity.Picture;
 import com.sziit.noteassistant.pojo.entity.Text;
 import com.sziit.noteassistant.mapper.TextMapper;
 import com.sziit.noteassistant.service.TextService;
+import com.sziit.noteassistant.utils.TransactionalJug;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,28 +31,26 @@ public class TextServiceImpl implements TextService{
 
     @Override
     public void addText(Text text) {
-        textMapper.addText(text);
+        TransactionalJug.JudgeTransaction(textMapper.addText(text));
     }
 
     @Override
     public Text updateText(Text text) {
-        textMapper.updateText(text);
+        TransactionalJug.JudgeTransaction(textMapper.updateText(text));
         return textMapper.selectOne(text);
     }
 
     @Override
     public void deleteText(Integer tId) {
-        textMapper.deleteText(tId);
+        TransactionalJug.JudgeTransaction(textMapper.deleteText(tId));
     }
 
     @Override
     public boolean deleteTexts(Integer[] tIds) {
-        int sum =0;
         for (Integer tId: tIds) {
-            int result = textMapper.deleteText(tId);
-            sum += result;
+            deleteText(tId);
         }
-        return sum == tIds.length;
+        return true;
     }
 
     @Override

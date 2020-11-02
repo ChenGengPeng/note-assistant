@@ -25,5 +25,5 @@ public interface InformationMapper {
 
     Information getByUid(Integer uId);
     @Delete("delete from information where information.u_id = #{uId}")
-    void deletByUid(Integer uId);
+    int deletByUid(Integer uId);
 }

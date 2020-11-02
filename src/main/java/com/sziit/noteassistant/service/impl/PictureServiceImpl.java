@@ -5,6 +5,7 @@ import com.sziit.noteassistant.pojo.entity.Picture;
 import com.sziit.noteassistant.mapper.PictureMapper;
 import com.sziit.noteassistant.service.PictureService;
 
+import com.sziit.noteassistant.utils.TransactionalJug;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,28 +32,26 @@ public class PictureServiceImpl implements PictureService {
 
     @Override
     public void addPicture(Picture picture) {
-        pictureMapper.addPicture(picture);
+        TransactionalJug.JudgeTransaction( pictureMapper.addPicture(picture));
     }
 
     @Override
     public Picture updatePicture(Picture picture) {
-        pictureMapper.updatePicture(picture);
+        TransactionalJug.JudgeTransaction(pictureMapper.updatePicture(picture));
         return pictureMapper.selectOne(picture);
     }
 
     @Override
     public void deletePicture(Integer pId) {
-        pictureMapper.deletePicture(pId);
+        TransactionalJug.JudgeTransaction(pictureMapper.deletePicture(pId));
     }
 
     @Override
     public boolean deletePictures(Integer[] pIds) {
-        int sum =0;
         for (Integer pId: pIds) {
-            int result = pictureMapper.deletePicture(pId);
-            sum += result;
+           deletePicture(pId);
         }
-        return sum == pIds.length;
+        return true;
     }
 
     @Override
@@ -63,5 +62,10 @@ public class PictureServiceImpl implements PictureService {
     @Override
     public Picture selectPictureOne(Picture picture) {
         return pictureMapper.selectOne(picture);
+    }
+
+    @Override
+    public Picture selectPictureByUrl(String pUrl) {
+        return pictureMapper.selectPictureByUrl(pUrl);
     }
 }

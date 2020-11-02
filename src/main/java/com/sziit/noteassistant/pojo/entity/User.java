@@ -18,9 +18,11 @@ import lombok.NoArgsConstructor;
  * @author CGP
  * @since 2020-10-04
  */
-@Data
-@EqualsAndHashCode(callSuper = false)
+
 @ApiModel(value="User对象", description="")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
 
     private static final long serialVersionUID=1L;
@@ -33,6 +35,16 @@ public class User {
 
     @ApiModelProperty(value = "用户密码")
     private String password;
+
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
+    public User(Integer uId,String username) {
+        this.uId = uId;
+        this.username = username;
+    }
 
     protected Serializable pkVal() {
         return this.uId;

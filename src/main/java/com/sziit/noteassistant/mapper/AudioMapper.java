@@ -25,7 +25,7 @@ public interface AudioMapper{
 
     public int addAudio(Audio audio);
 
-    public void updateAudio(Audio audio);
+    public int updateAudio(Audio audio);
 
     @Delete("delete from audio where a_id = #{aId}")
     public int deleteAudio(Integer aId);

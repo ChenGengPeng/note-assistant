@@ -29,4 +29,6 @@ public interface PictureService{
     Picture selectPictureByPid(Integer pId);
 
     Picture selectPictureOne(Picture picture);
+
+    Picture selectPictureByUrl(String pUrl);
 }

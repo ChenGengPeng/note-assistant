@@ -8,9 +8,9 @@ import lombok.Getter;
  */
 @Getter
 public enum ResultCode implements StatusCode {
-    SUCCESS(200, "请求成功"),
-    BAD_REQUEST(400,"请求错误"),
-    UNAUTHORIZED(401,"未授权，请登录"),
+    SUCCESS(1, "请求成功"),
+    BAD_REQUEST(0,"请求错误"),
+    UNAUTHORIZED(-1,"未授权，请登录"),
     PERMISSION_DENIED(403,"拒绝访问"),
     NOT_FOUND(404, "请求的资源不存在"),
     TIMEOUT(408,"请求超时"),

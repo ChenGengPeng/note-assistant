@@ -25,7 +25,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
 @ApiModel(value="Note对象", description="")
 public class Note  {
 
@@ -35,14 +34,28 @@ public class Note  {
     private Integer nId;
 
     @ApiModelProperty(value = "笔记名称")
-    private String nName;
+    private String title;
+
+    @ApiModelProperty(value = "是否收藏")
+    private Boolean favorite;
 
     @ApiModelProperty(value = "创建时间")
     @JSONField(serializeUsing = LocalDateTimeSerializer.class,deserializeUsing = LocalDateTimeDeserializer.class)
     private LocalDateTime createtime;
 
+    @ApiModelProperty(value = "笔记摘要")
+    private String summary;
+
     @ApiModelProperty(value = "所属用户id")
     private Integer uId;
+
+    public Note(String title, Boolean favorite, LocalDateTime createtime, String summary, Integer uId) {
+        this.title = title;
+        this.favorite = favorite;
+        this.createtime = createtime;
+        this.summary = summary;
+        this.uId =uId;
+    }
 
 
     protected Serializable pkVal() {
