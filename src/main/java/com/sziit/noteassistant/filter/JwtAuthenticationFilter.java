@@ -1,5 +1,7 @@
 package com.sziit.noteassistant.filter;
 
+import com.sziit.noteassistant.exception.UnauthorizedException;
+import com.sziit.noteassistant.http.ResultCode;
 import com.sziit.noteassistant.pojo.Jwt;
 import com.sziit.noteassistant.pojo.entity.User;
 import com.sziit.noteassistant.service.UserService;
@@ -17,6 +19,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.UnavailableException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -41,8 +44,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String username = null;
         String authToken = null;
         if (header != null && header.startsWith(Jwt.token_prefix)){
-            authToken = header.replace(Jwt.token_prefix+" ","");
-            if(authToken==null || "null".equals(authToken)){
+            authToken = header.replace(Jwt.token_prefix,"");
+            if(authToken==null || "".equals(authToken)){
                 logger.warn("couldn't not find bearer string , will ignore the header");
             }else {
                 try{
@@ -56,11 +59,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
         }else {
-
             logger.warn("couldn't not find bearer string , will ignore the header");
         }
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null){
             user = userService.findByName(username);
+            if(user==null){
+                throw new UnauthorizedException(ResultCode.UNAUTHORIZED);
+            }
             if (jwtUtils.validateToken(authToken,user)){
                 user.setPassword(null);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null, Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN")));

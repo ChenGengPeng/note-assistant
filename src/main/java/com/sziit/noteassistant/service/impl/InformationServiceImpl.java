@@ -1,11 +1,8 @@
 package com.sziit.noteassistant.service.impl;
 
 
-import com.sziit.noteassistant.mapper.AudioMapper;
 import com.sziit.noteassistant.mapper.InformationMapper;
-import com.sziit.noteassistant.pojo.entity.Audio;
 import com.sziit.noteassistant.pojo.entity.Information;
-import com.sziit.noteassistant.service.AudioService;
 import com.sziit.noteassistant.service.InformationService;
 import com.sziit.noteassistant.utils.TransactionalJug;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +41,7 @@ public class InformationServiceImpl implements InformationService {
 
     @Override
     public boolean updateInform(Information information) {
-        informationMapper.updateInfor(information);
+        TransactionalJug.JudgeTransaction(informationMapper.updateInfor(information));
         return true;
     }
 

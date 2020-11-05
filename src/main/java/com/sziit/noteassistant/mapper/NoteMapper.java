@@ -1,44 +1,39 @@
 package com.sziit.noteassistant.mapper;
 
-
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sziit.noteassistant.pojo.entity.Note;
-import io.swagger.models.auth.In;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
 /**
- * <p>
- *  Mapper 接口
- * </p>
- *
- * @author CGP
- * @since 2020-10-04
+ * @author CGP 1577992659@qq.com
+ * @date 2020/11/3  2:13
  */
+@Mapper
 public interface NoteMapper {
 
-    public List<Note> selectNotesByUid(Page<Note>page,Integer uId);
-    List<Note> selectNotesByUidASC(Page<Note>page,Integer uId);
+    int add(Note note);
 
-    public int addNote(Note note);
+    int update(Note note);
 
-    @Select("select * from note where n_id = #{nId}")
-    public Note selectNoteByNId(Integer nId);
+    int changeFav(Boolean favorite,Integer nId);
 
-    public int updateNote(Note note);
+    Note findOne(Note note);
 
-    public List<Note> getFavoriteNote(Integer uId);
+    int delNote(Integer nId);
 
-    public Note findOne(Note note);
+    int delNotes(String[] nIds);
 
-    @Delete("delete from note where n_id = #{nId}")
-    public int deleteNote(Integer nId);
+    Note findNoteByNid(Integer nId);
+
+    List<Note> getNotesDesc(Page<Note> page,Integer uId);
+
+    List<Note> getNotesAsc(Page<Note> page,Integer uId);
+
+    List<Note> getFavNotesDesc(Page<Note> page,Integer uId);
+
+    List<Note> getFavNotesAsc(Page<Note> page,Integer uId);
 
 
-    List<Note> selectFavNotesByUid(Page<Note> page, Integer uId);
-    List<Note> selectFavNotesByUidASC(Page<Note> page, Integer uId);
 }

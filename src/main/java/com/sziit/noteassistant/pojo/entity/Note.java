@@ -4,6 +4,7 @@ package com.sziit.noteassistant.pojo.entity;
 import java.time.LocalDateTime;
 import java.io.Serializable;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.sziit.noteassistant.config.LocalDateTimeDeserializer;
 import com.sziit.noteassistant.config.LocalDateTimeSerializer;
@@ -31,7 +32,7 @@ public class Note  {
     private static final long serialVersionUID=1L;
 
     @ApiModelProperty(value = "笔记id")
-    private Integer nId;
+    private Integer id;
 
     @ApiModelProperty(value = "笔记名称")
     private String title;
@@ -41,7 +42,10 @@ public class Note  {
 
     @ApiModelProperty(value = "创建时间")
     @JSONField(serializeUsing = LocalDateTimeSerializer.class,deserializeUsing = LocalDateTimeDeserializer.class)
-    private LocalDateTime createtime;
+    private LocalDateTime date;
+
+    @ApiModelProperty(value = "笔记数据")
+    private String data;
 
     @ApiModelProperty(value = "笔记摘要")
     private String summary;
@@ -49,17 +53,21 @@ public class Note  {
     @ApiModelProperty(value = "所属用户id")
     private Integer uId;
 
-    public Note(String title, Boolean favorite, LocalDateTime createtime, String summary, Integer uId) {
+
+    public Note(Integer uId, String title, Boolean favorite, String data, LocalDateTime date) {
+        this.uId = uId;
         this.title = title;
         this.favorite = favorite;
-        this.createtime = createtime;
+        this.data = data;
+        this.date = date;
+    }
+
+    public Note(Integer Id, String title, Boolean favorite, String data, String summary, Integer uId) {
+        this.id = Id;
+        this.title = title;
+        this.favorite = favorite;
+        this.data = data;
         this.summary = summary;
-        this.uId =uId;
+        this.uId = uId;
     }
-
-
-    protected Serializable pkVal() {
-        return this.nId;
-    }
-
 }

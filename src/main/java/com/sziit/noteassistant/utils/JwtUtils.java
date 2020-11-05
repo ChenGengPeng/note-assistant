@@ -6,6 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.sziit.noteassistant.pojo.Jwt;
 import com.sziit.noteassistant.pojo.entity.User;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.core.Authentication;
@@ -67,10 +68,17 @@ public class JwtUtils implements Serializable {
      * @return
      */
     private Claims getAllClaimsFromToken(String token) {
-        return Jwts.parser()
-                .setSigningKey(Jwt.secret)
-                .parseClaimsJws(token)
-                .getBody();
+        Claims claims;
+        try {
+            claims = Jwts.parser()
+                    .setSigningKey(Jwt.secret)
+                    .parseClaimsJws(token)
+                    .getBody();
+        }catch (ExpiredJwtException e){
+            claims = e.getClaims();
+        }
+        return claims;
+
     }
 
     /**
@@ -88,8 +96,9 @@ public class JwtUtils implements Serializable {
      * @return
      */
     private Boolean isTokenExpired(String token){
-        final Date expiration = getExpirationDataFromToken(token);
-        return expiration.before(new Date());
+        Claims claims = this.getAllClaimsFromToken(token);
+        final Date expiration = claims.getExpiration();
+        return new Date(System.currentTimeMillis()).after(expiration);
     }
 
     /**
@@ -107,6 +116,7 @@ public class JwtUtils implements Serializable {
      *     //2. Sign the JWT using the HS512 algorithm and secret key.
      *     //3. According to JWS Compact Serialization(https://tools.ietf.org/html/draft-ietf-jose-json-web-signature-41#section-3.1)
      *     //   compaction of the JWT to a URL-safe string
+     *     iss(签发者), exp(过期时间), sub(面向用户), aud(接收方), iat(签发时间)等。
      * @param subject
      * @return
      */
@@ -129,6 +139,10 @@ public class JwtUtils implements Serializable {
      */
     public Boolean validateToken(String token, User user){
         final String username = getUsernameFromToken(token);
+        if (username.equals(user.getUsername())
+                && !isTokenExpired(token)){
+            return true;
+        }
         return (
                 username.equals(user.getUsername())
                 && !isTokenExpired(token)

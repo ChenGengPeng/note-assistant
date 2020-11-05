@@ -6,7 +6,7 @@ package com.sziit.noteassistant.utils;
  */
 public class TransactionalJug {
     public static void JudgeTransaction(int result){
-        if (result != 1){
+        if (result < 1){
             throw new RuntimeException("事务操作失败，回滚");
         }
     }

@@ -55,13 +55,21 @@ public class UserController {
        informationService.addInform(new Information(loginUser.getPhone(),addUser.getUId()));
        logger.info("用户注册成功，用户名为："+addUser.getUsername());
        addUser.setPassword(null);
-        return new ResultVo(addUser);
+        return new ResultVo(ResultCode.SUCCESS);
     }
 
     @PostMapping("login")
     @ApiOperation(value = "登录")
     public Object login(@RequestBody LoginUser loginUser) {
-        User userInDataBase = userService.findById(informationService.findInformByPhone(loginUser.getPhone()).getUId());
+        User userInDataBase = null;
+        if (informationService.findInformByPhone(loginUser.getPhone())==null && userService.findByName(loginUser.getPhone())==null){
+            return new ResultVo(ResultCode.BAD_REQUEST);
+        }
+        if(informationService.findInformByPhone(loginUser.getPhone())==null){
+            userInDataBase= userService.findByName(loginUser.getPhone());
+        }else {
+            userInDataBase = userService.findById(informationService.findInformByPhone(loginUser.getPhone()).getUId());
+        }
         if (userInDataBase == null || !userService.comparePassword(loginUser.getPassword(),userInDataBase.getPassword())){
             logger.error("用户名或者密码错误");
             return new ResultVo(ResultCode.BAD_REQUEST);
@@ -102,7 +110,9 @@ public class UserController {
         if (userInDataBase == null || user.getUsername() == null){
             logger.error("未登录或者用户不存在");
             return new ResultVo(ResultCode.UNAUTHORIZED);
-        }else {
+        }else if (userService.findByName(newUsername) != null){
+            return new ResultVo(ResultCode.BAD_REQUEST,"用户名重复");
+        } else {
             userInDataBase.setUsername(newUsername);
             logger.info("用户名修改成功");
             return new ResultVo(userService.changeUsername(userInDataBase).getUsername());
