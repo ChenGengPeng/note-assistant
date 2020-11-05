@@ -4,7 +4,8 @@ package com.sziit.noteassistant.service.impl;
 import com.sziit.noteassistant.mapper.InformationMapper;
 import com.sziit.noteassistant.pojo.entity.Information;
 import com.sziit.noteassistant.service.InformationService;
-import com.sziit.noteassistant.utils.TransactionalJug;
+import com.sziit.noteassistant.utils.JudgeUtils;
+import com.sziit.noteassistant.utils.RedisUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,11 +22,14 @@ public class InformationServiceImpl implements InformationService {
 
     @Autowired
     private InformationMapper informationMapper;
+    @Autowired
+    private RedisUtils redisUtils;
     @Override
     public Information addInform(Information information) {
-        TransactionalJug.JudgeTransaction(informationMapper.add_infor(information));
+        JudgeUtils.JudgeTransaction(informationMapper.add_infor(information));
         Information information1 = new Information();
         information1.setUId(information.getUId());
+        redisUtils.set(String.valueOf(information1.getUId()),information1);
         return informationMapper.findOne(information1);
     }
 
@@ -40,9 +44,9 @@ public class InformationServiceImpl implements InformationService {
     }
 
     @Override
-    public boolean updateInform(Information information) {
-        TransactionalJug.JudgeTransaction(informationMapper.updateInfor(information));
-        return true;
+    public Information updateInform(Information information) {
+        JudgeUtils.JudgeTransaction(informationMapper.updateInfor(information));
+        return findById(information.getIId());
     }
 
     @Override
@@ -54,6 +58,6 @@ public class InformationServiceImpl implements InformationService {
 
     @Override
     public void deleteByUid(Integer uid) {
-        TransactionalJug.JudgeTransaction(informationMapper.deletByUid(uid));
+        JudgeUtils.JudgeTransaction(informationMapper.deletByUid(uid));
     }
 }

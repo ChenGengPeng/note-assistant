@@ -8,7 +8,9 @@ import com.sziit.noteassistant.pojo.entity.Information;
 import com.sziit.noteassistant.pojo.entity.User;
 import com.sziit.noteassistant.service.InformationService;
 import com.sziit.noteassistant.service.UserService;
+import com.sziit.noteassistant.utils.JudgeUtils;
 import com.sziit.noteassistant.utils.JwtUtils;
+import com.sziit.noteassistant.utils.RedisUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.logging.Log;
@@ -38,6 +40,8 @@ public class UserController {
     private InformationService informationService;
     @Autowired
     private JwtUtils jwtUtils;
+    @Autowired
+    private RedisUtils redisUtils;
     /**
      * 注册用户
      *
@@ -47,11 +51,12 @@ public class UserController {
     @PostMapping("register")
     @ApiOperation(value = "注册")
     public Object register(@RequestBody LoginUser loginUser) {
-       if (informationService.findInformByPhone(loginUser.getPhone()) != null){
+       if (redisUtils.exists(loginUser.getPhone()) || informationService.findInformByPhone(loginUser.getPhone()) != null){
            logger.error("手机号已经被注册");
            return new ResultVo(ResultCode.BAD_REQUEST);
        }
         User addUser = userService.add(new User(loginUser.getPhone(), loginUser.getPassword()));
+       redisUtils.set(loginUser.getPhone(),addUser.getUId());
        informationService.addInform(new Information(loginUser.getPhone(),addUser.getUId()));
        logger.info("用户注册成功，用户名为："+addUser.getUsername());
        addUser.setPassword(null);
@@ -62,13 +67,15 @@ public class UserController {
     @ApiOperation(value = "登录")
     public Object login(@RequestBody LoginUser loginUser) {
         User userInDataBase = null;
-        if (informationService.findInformByPhone(loginUser.getPhone())==null && userService.findByName(loginUser.getPhone())==null){
+        if (redisUtils.exists(loginUser.getPhone()) || informationService.findInformByPhone(loginUser.getPhone())!=null || userService.findByName(loginUser.getPhone())!=null){
+            if(informationService.findInformByPhone(loginUser.getPhone())==null){
+                userInDataBase= userService.findByName(loginUser.getPhone());
+            }else {
+                userInDataBase = userService.findById(informationService.findInformByPhone(loginUser.getPhone()).getUId());
+            }
+            redisUtils.set(loginUser.getPhone(),loginUser.getPhone());
+        }else{
             return new ResultVo(ResultCode.BAD_REQUEST);
-        }
-        if(informationService.findInformByPhone(loginUser.getPhone())==null){
-            userInDataBase= userService.findByName(loginUser.getPhone());
-        }else {
-            userInDataBase = userService.findById(informationService.findInformByPhone(loginUser.getPhone()).getUId());
         }
         if (userInDataBase == null || !userService.comparePassword(loginUser.getPassword(),userInDataBase.getPassword())){
             logger.error("用户名或者密码错误");
@@ -86,12 +93,9 @@ public class UserController {
     @PutMapping("changePwd")
     @ApiOperation(value = "修改密码")
     public Object changePwd(@RequestParam String oldPassword,@RequestParam String newPassword) {
-        User user = jwtUtils.getUserBytoken();
+        User user = JudgeUtils.JudgeUserExits();
         User userInDB = userService.findById(user.getUId());
-        if (user.getUsername() == null || userInDB == null) {
-            logger.error("未登录");
-            return new ResultVo(ResultCode.UNAUTHORIZED);
-        } else if (!userService.comparePassword(oldPassword,userInDB.getPassword())) {
+        if (!userService.comparePassword(oldPassword,userInDB.getPassword())) {
             logger.error("密码错误");
             return new ResultVo(ResultCode.SUCCESS,"密码错误");
         }else {
@@ -105,17 +109,16 @@ public class UserController {
     @PutMapping("changeName")
     @ApiOperation(value = "修改用户名")
     public Object changeName(@RequestParam String newUsername){
-        User user = jwtUtils.getUserBytoken();
-        User userInDataBase = userService.findById(user.getUId());
-        if (userInDataBase == null || user.getUsername() == null){
-            logger.error("未登录或者用户不存在");
-            return new ResultVo(ResultCode.UNAUTHORIZED);
-        }else if (userService.findByName(newUsername) != null){
+        User user = JudgeUtils.JudgeUserExits();
+       if (redisUtils.exists(newUsername) || userService.findByName(newUsername) != null){
             return new ResultVo(ResultCode.BAD_REQUEST,"用户名重复");
         } else {
-            userInDataBase.setUsername(newUsername);
+            redisUtils.remove(user.getUsername());
+            user.setUsername(newUsername);
+            User userInDB = userService.changeUsername(user);
+            redisUtils.set(userInDB.getUsername(),userInDB.getUId());
             logger.info("用户名修改成功");
-            return new ResultVo(userService.changeUsername(userInDataBase).getUsername());
+            return new ResultVo(userInDB.getUsername());
         }
     }
 

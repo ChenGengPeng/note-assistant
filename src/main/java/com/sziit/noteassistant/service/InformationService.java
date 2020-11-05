@@ -16,7 +16,7 @@ public interface InformationService {
     public Information addInform(Information information);
     public Information findById(Integer iid);
     public Information findByUid(Integer uid);
-    public boolean updateInform(Information information);
+    public Information updateInform(Information information);
     public Information findInformByPhone(String phone);
     public void deleteByUid(Integer uid);
 }

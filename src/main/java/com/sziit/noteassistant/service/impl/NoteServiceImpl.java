@@ -4,12 +4,11 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.google.gson.JsonArray;
 import com.sziit.noteassistant.mapper.NoteMapper;
 import com.sziit.noteassistant.pojo.NoteAuth;
 import com.sziit.noteassistant.pojo.entity.Note;
 import com.sziit.noteassistant.service.NoteService;
-import com.sziit.noteassistant.utils.TransactionalJug;
+import com.sziit.noteassistant.utils.JudgeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -57,19 +56,19 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     public Note addNote(Note note) {
-        TransactionalJug.JudgeTransaction(noteMapper.add(note));
+        JudgeUtils.JudgeTransaction(noteMapper.add(note));
         return findOne(note);
     }
 
     @Override
     public Note updateNote(Note note) {
-        TransactionalJug.JudgeTransaction(noteMapper.update(note));
+        JudgeUtils.JudgeTransaction(noteMapper.update(note));
         return noteMapper.findNoteByNid(note.getId());
     }
 
     @Override
     public Note changeFavState(Integer nId, Boolean favorite) {
-        TransactionalJug.JudgeTransaction(noteMapper.changeFav(favorite,nId));
+        JudgeUtils.JudgeTransaction(noteMapper.changeFav(favorite,nId));
         return noteMapper.findNoteByNid(nId);
     }
 
@@ -107,11 +106,11 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     public void delNote(Integer nId) {
-        TransactionalJug.JudgeTransaction(noteMapper.delNote(nId));
+        JudgeUtils.JudgeTransaction(noteMapper.delNote(nId));
     }
 
     @Override
     public void delNotes(String[] nIds) {
-        TransactionalJug.JudgeTransaction(noteMapper.delNotes(nIds));
+        JudgeUtils.JudgeTransaction(noteMapper.delNotes(nIds));
     }
 }

@@ -27,6 +27,7 @@ import java.util.function.Function;
 @Component
 public class JwtUtils implements Serializable {
 
+    private RedisUtils redisUtils;
     private static final String SECRET = Jwt.secret;
     private static final long EXPIRATION_TIME = Jwt.expiration_time;
     private static final String TOKEN_PREFIX = Jwt.token_prefix;
@@ -126,7 +127,7 @@ public class JwtUtils implements Serializable {
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + Jwt.expiration_time *1000))
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME *1000))
                 .signWith(SignatureAlgorithm.HS256,Jwt.secret)
                 .compact();
     }
@@ -139,10 +140,6 @@ public class JwtUtils implements Serializable {
      */
     public Boolean validateToken(String token, User user){
         final String username = getUsernameFromToken(token);
-        if (username.equals(user.getUsername())
-                && !isTokenExpired(token)){
-            return true;
-        }
         return (
                 username.equals(user.getUsername())
                 && !isTokenExpired(token)

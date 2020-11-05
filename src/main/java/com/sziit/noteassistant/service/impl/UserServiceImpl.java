@@ -6,9 +6,8 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.sziit.noteassistant.mapper.UserMapper;
 import com.sziit.noteassistant.pojo.entity.User;
 import com.sziit.noteassistant.service.UserService;
-import com.sziit.noteassistant.utils.TransactionalJug;
+import com.sziit.noteassistant.utils.JudgeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,9 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -44,7 +41,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public User add(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        TransactionalJug.JudgeTransaction(userMapper.add(user));
+        JudgeUtils.JudgeTransaction(userMapper.add(user));
         return userMapper.findByUsername(user.getUsername());
     }
 
@@ -66,7 +63,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void changePassword(User user) {
-        TransactionalJug.JudgeTransaction(userMapper.changePassword(user.getUId(),
+        JudgeUtils.JudgeTransaction(userMapper.changePassword(user.getUId(),
                 passwordEncoder.encode(user.getPassword())));
     }
 
@@ -77,7 +74,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public User changeUsername(User user) {
-        TransactionalJug.JudgeTransaction(userMapper.updateUser(user));
+        JudgeUtils.JudgeTransaction(userMapper.updateUser(user));
         return userMapper.findOne(user);
 
     }
