@@ -11,8 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class JudgeUtils {
 
-    @Autowired
-    private static RedisUtils redisUtils;
+
 
     public static void JudgeTransaction(int result){
         if (result < 1){
@@ -20,14 +19,4 @@ public class JudgeUtils {
         }
     }
 
-    public static User JudgeUserExits(){
-        User userBytoken = JwtUtils.getUserBytoken();
-        if (!redisUtils.exists(userBytoken.getUsername())){
-            if (userBytoken.getUsername() == null){
-                throw new UnauthorizedException(ResultCode.UNAUTHORIZED);
-            }
-        }
-        return userBytoken;
-
-    }
 }

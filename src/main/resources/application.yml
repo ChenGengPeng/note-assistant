@@ -32,7 +32,7 @@ spring:
       max-lifetime: 1800000 # 连接的生命时长（毫秒），超时而且没被使用则被释放（retired），默认:30分钟
       connection-test-query: SELECT 1
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://101.37.30.70:3306/note_assistant?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf8&autoReconnect=true&allowMultiQueries=true
+    url: jdbc:mysql://112.74.205.153:3306/note_assistant?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf8&autoReconnect=true&allowMultiQueries=true
     username: root
     password: 3412410
   devtools:
@@ -55,7 +55,7 @@ spring:
     port: 6379
     # Redis服务器连接密码（默认为空）
     password:
-    host: 101.37.30.70
+    host: 112.74.205.153
     # Redis数据库索引（默认为0）
     database: 1
     timeout: 5000

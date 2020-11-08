@@ -1,6 +1,7 @@
 package com.sziit.noteassistant.controller;
 
 
+import com.sziit.noteassistant.exception.UnauthorizedException;
 import com.sziit.noteassistant.http.ResultCode;
 import com.sziit.noteassistant.http.ResultVo;
 import com.sziit.noteassistant.pojo.LoginUser;
@@ -60,21 +61,23 @@ public class UserController {
        informationService.addInform(new Information(loginUser.getPhone(),addUser.getUId()));
        logger.info("用户注册成功，用户名为："+addUser.getUsername());
        addUser.setPassword(null);
-        return new ResultVo(ResultCode.SUCCESS);
+        return new ResultVo(addUser);
     }
 
     @PostMapping("login")
     @ApiOperation(value = "登录")
     public Object login(@RequestBody LoginUser loginUser) {
         User userInDataBase = null;
-        if (redisUtils.exists(loginUser.getPhone()) || informationService.findInformByPhone(loginUser.getPhone())!=null || userService.findByName(loginUser.getPhone())!=null){
+        if (redisUtils.exists(loginUser.getPhone())){
+            userInDataBase = userService.findById((Integer) redisUtils.get(loginUser.getPhone()));
+        }else if (informationService.findInformByPhone(loginUser.getPhone())!=null || userService.findByName(loginUser.getPhone())!=null){
             if(informationService.findInformByPhone(loginUser.getPhone())==null){
                 userInDataBase= userService.findByName(loginUser.getPhone());
             }else {
                 userInDataBase = userService.findById(informationService.findInformByPhone(loginUser.getPhone()).getUId());
             }
-            redisUtils.set(loginUser.getPhone(),loginUser.getPhone());
-        }else{
+            redisUtils.set(loginUser.getPhone(),userInDataBase.getUId());
+        } else{
             return new ResultVo(ResultCode.BAD_REQUEST);
         }
         if (userInDataBase == null || !userService.comparePassword(loginUser.getPassword(),userInDataBase.getPassword())){
@@ -93,7 +96,7 @@ public class UserController {
     @PutMapping("changePwd")
     @ApiOperation(value = "修改密码")
     public Object changePwd(@RequestParam String oldPassword,@RequestParam String newPassword) {
-        User user = JudgeUtils.JudgeUserExits();
+        User user = JwtUtils.getUserBytoken();
         User userInDB = userService.findById(user.getUId());
         if (!userService.comparePassword(oldPassword,userInDB.getPassword())) {
             logger.error("密码错误");
@@ -109,7 +112,7 @@ public class UserController {
     @PutMapping("changeName")
     @ApiOperation(value = "修改用户名")
     public Object changeName(@RequestParam String newUsername){
-        User user = JudgeUtils.JudgeUserExits();
+        User user = JwtUtils.getUserBytoken();
        if (redisUtils.exists(newUsername) || userService.findByName(newUsername) != null){
             return new ResultVo(ResultCode.BAD_REQUEST,"用户名重复");
         } else {

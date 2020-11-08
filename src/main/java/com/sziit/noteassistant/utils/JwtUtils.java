@@ -3,12 +3,16 @@ package com.sziit.noteassistant.utils;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.sziit.noteassistant.exception.UnauthorizedException;
+import com.sziit.noteassistant.http.ResultCode;
 import com.sziit.noteassistant.pojo.Jwt;
 import com.sziit.noteassistant.pojo.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,9 +31,12 @@ import java.util.function.Function;
 @Component
 public class JwtUtils implements Serializable {
 
+    @Autowired
     private RedisUtils redisUtils;
+
     private static final String SECRET = Jwt.secret;
-    private static final long EXPIRATION_TIME = Jwt.expiration_time;
+    @Value("${jwt.EXPIRATION_TIME}")
+    private static final long EXPIRATION_TIME = 86400;
     private static final String TOKEN_PREFIX = Jwt.token_prefix;
     private static final String AUTHORIZATION = Jwt.authorization;
 
@@ -46,6 +53,13 @@ public class JwtUtils implements Serializable {
 
     public static User  getUserBytoken(){
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication.getPrincipal() instanceof User)){
+               throw new UnauthorizedException(ResultCode.UNAUTHORIZED);
+        }
+        User user = (User) authentication.getPrincipal();
+        if (user.getUsername() == null || user.getUId() == null){
+            throw new UnauthorizedException(ResultCode.UNAUTHORIZED);
+        }
         return (User) authentication.getPrincipal();
     }
 

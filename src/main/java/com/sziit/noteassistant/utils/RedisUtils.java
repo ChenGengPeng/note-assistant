@@ -60,7 +60,12 @@ public class RedisUtils {
      * @return
      */
     public boolean exists(final String key) {
-        return redisTemplate.hasKey(key);
+        try {
+            return redisTemplate.hasKey(key);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     /**

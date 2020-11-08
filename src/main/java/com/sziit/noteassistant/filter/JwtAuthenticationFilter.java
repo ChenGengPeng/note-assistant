@@ -67,7 +67,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             if (redisUtils.exists(username)){
-                user = (User) redisUtils.get(username);
+                user.setUId((Integer) redisUtils.get(username));
+                user.setUsername(username);
             }else {
                 user = userService.findByName(username);
             }

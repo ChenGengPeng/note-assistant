@@ -19,7 +19,7 @@ public class Jwt {
    @Value("${jwt.SECRET}")
    private String tempSecret;
    @Value("${jwt.EXPIRATION_TIME}")
-   private String tempExpiration_time;
+   private long tempExpiration_time;
    @Value("${jwt.TOKEN_PREFIX}")
    private String tempToken_Prefix;
    @Value("${jwt.AUTHORIZATION}")
@@ -31,7 +31,7 @@ public class Jwt {
    }
    @PostConstruct
    public void setExpiration_time() {
-      expiration_time = Long.parseLong(this.tempExpiration_time);
+      expiration_time = this.tempExpiration_time;
    }
    @PostConstruct
    public void setToken_prefix() {
