@@ -34,4 +34,8 @@ public interface NoteService {
     public void delNote(Integer nId);
 
     public void delNotes(String[] nIds);
+
+    public Note getNote(Integer id,Integer uid);
+
+    public IPage<Note> searchNoteByTitle(String title,Integer pageId,Integer uId);
 }

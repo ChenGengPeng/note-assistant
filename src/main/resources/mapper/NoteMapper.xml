@@ -35,7 +35,7 @@
     </sql>
 
     <select id="findNoteByNid" resultMap="BaseResultMap">
-        select n.n_id,n.title,n.favorite,n.summary,n.date,n.data from note n where n.n_id = #{id}
+        select n.n_id,n.title,n.favorite,n.summary,n.date,n.data from note n where n.n_id = #{nId}
     </select>
 
 
@@ -73,7 +73,7 @@
                 note.favorite = #{favorite}
             </if>
         </set>
-        where note.n_id = #{id}
+        where note.n_id = #{nId}
     </update>
 
     <select id="findOne" resultMap="BaseResultMap">
@@ -103,7 +103,15 @@
         delete from note
         where n_id IN
         <foreach collection="nIds" item="nId" open="(" separator="," close=")">
-            #{id}
+            #{nIds}
         </foreach>
     </delete>
+
+    <select id="getNote" resultMap="BaseResultMap">
+        select n.n_id , n.title, n.favorite , n.date, n.data from note n  where n.u_id = #{uId} and n.n_id = #{nId}
+    </select>
+
+    <select id="searcheNoteByTile" resultType="com.sziit.noteassistant.pojo.entity.Note">
+        select n.n_id as id,n.title,n.favorite,n.date,n.summary from note n where n.u_id = #{uId} and n.title like "%"#{title}"%" order by n.date DESC
+    </select>
 </mapper>

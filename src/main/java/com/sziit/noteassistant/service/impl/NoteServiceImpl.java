@@ -4,11 +4,14 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.sziit.noteassistant.exception.BadException;
+import com.sziit.noteassistant.http.ResultCode;
 import com.sziit.noteassistant.mapper.NoteMapper;
 import com.sziit.noteassistant.pojo.NoteAuth;
 import com.sziit.noteassistant.pojo.entity.Note;
 import com.sziit.noteassistant.service.NoteService;
 import com.sziit.noteassistant.utils.JudgeUtils;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -61,7 +64,7 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public Note updateNote(Note note) {
+    public Note  updateNote(Note note) {
         JudgeUtils.JudgeTransaction(noteMapper.update(note));
         return noteMapper.findNoteByNid(note.getId());
     }
@@ -91,7 +94,7 @@ public class NoteServiceImpl implements NoteService {
             JSONObject jsonObject = data.getJSONObject(i);
             String type = String.valueOf(jsonObject.get("type"));
             String value = String.valueOf(jsonObject.get("value"));
-            if ("text".equals(type)){
+            if ("text".equals(type) || "ocrText".equals(type)){
                 summary.append(value);
                 if (summary.length() >= 200){
                     break;
@@ -112,5 +115,22 @@ public class NoteServiceImpl implements NoteService {
     @Override
     public void delNotes(String[] nIds) {
         JudgeUtils.JudgeTransaction(noteMapper.delNotes(nIds));
+    }
+
+    @Override
+    public Note getNote(Integer id, Integer uid) {
+        try {
+            return noteMapper.getNote(id,uid);
+        }catch (Exception e){
+            throw new BadException(ResultCode.BAD_REQUEST);
+        }
+
+    }
+
+    @Override
+    public IPage<Note> searchNoteByTitle(String title, Integer pageId, Integer uId) {
+        Page<Note> page = new Page<>(pageId,pageSize);
+        page.setRecords(noteMapper.searcheNoteByTile(page,title,uId));
+        return page;
     }
 }

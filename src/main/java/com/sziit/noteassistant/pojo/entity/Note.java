@@ -70,4 +70,17 @@ public class Note  {
         this.summary = summary;
         this.uId = uId;
     }
+
+    public Note(Integer id, String title, Boolean favorite, Integer uId,LocalDateTime date) {
+        this.id = id;
+        this.title = title;
+        this.favorite = favorite;
+        this.date = date;
+        this.uId = uId;
+    }
+
+    public Note(Integer id, Integer uId) {
+        this.id = id;
+        this.uId = uId;
+    }
 }

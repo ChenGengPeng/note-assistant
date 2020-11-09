@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sziit.noteassistant.mapper.ShareMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.sziit.noteassistant.pojo.entity.Share">
+        <id column="id" property="id"/>
+        <result column="n_id" property="nId"/>
+        <result column="share_id" property="shareId"/>
+    </resultMap>
+
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+       id,n_id,share_id
+    </sql>
+
+
+
+    <insert id="insertShareKey" useGeneratedKeys="true" keyProperty="id">
+        insert into share(n_id,share_id)
+        values (#{nId},#{shareId})
+    </insert>
+    <select id="findOneByNid" resultMap="BaseResultMap">
+        select id,n_id,share_id from share where n_id = #{nId}
+    </select>
+    <select id="findOneByShareId" resultMap="BaseResultMap">
+        select id,n_id,share_id from share where share_id = #{shareId}
+    </select>
+</mapper>

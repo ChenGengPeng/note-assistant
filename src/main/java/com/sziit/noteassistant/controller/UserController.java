@@ -1,10 +1,12 @@
 package com.sziit.noteassistant.controller;
 
 
+import com.sziit.noteassistant.exception.BadException;
 import com.sziit.noteassistant.exception.UnauthorizedException;
 import com.sziit.noteassistant.http.ResultCode;
 import com.sziit.noteassistant.http.ResultVo;
 import com.sziit.noteassistant.pojo.LoginUser;
+import com.sziit.noteassistant.pojo.PasswordAuth;
 import com.sziit.noteassistant.pojo.entity.Information;
 import com.sziit.noteassistant.pojo.entity.User;
 import com.sziit.noteassistant.service.InformationService;
@@ -66,6 +68,7 @@ public class UserController {
 
     @PostMapping("login")
     @ApiOperation(value = "登录")
+    @ResponseStatus
     public Object login(@RequestBody LoginUser loginUser) {
         User userInDataBase = null;
         if (redisUtils.exists(loginUser.getPhone())){
@@ -78,11 +81,11 @@ public class UserController {
             }
             redisUtils.set(loginUser.getPhone(),userInDataBase.getUId());
         } else{
-            return new ResultVo(ResultCode.BAD_REQUEST);
+            throw new BadException(ResultCode.BAD_REQUEST);
         }
         if (userInDataBase == null || !userService.comparePassword(loginUser.getPassword(),userInDataBase.getPassword())){
             logger.error("用户名或者密码错误");
-            return new ResultVo(ResultCode.BAD_REQUEST);
+            throw new BadException(ResultCode.BAD_REQUEST);
         }else {
             String token = jwtUtils.generateToken(userInDataBase);
             logger.info("登录成功，获取token："+token);
@@ -95,14 +98,14 @@ public class UserController {
 
     @PutMapping("changePwd")
     @ApiOperation(value = "修改密码")
-    public Object changePwd(@RequestParam String oldPassword,@RequestParam String newPassword) {
+    public Object changePwd(@RequestBody PasswordAuth passwordAuth) {
         User user = JwtUtils.getUserBytoken();
         User userInDB = userService.findById(user.getUId());
-        if (!userService.comparePassword(oldPassword,userInDB.getPassword())) {
+        if (!userService.comparePassword(passwordAuth.getOldPassword(), userInDB.getPassword())) {
             logger.error("密码错误");
-            return new ResultVo(ResultCode.SUCCESS,"密码错误");
+            throw new BadException(ResultCode.BAD_REQUEST);
         }else {
-            userInDB.setPassword(newPassword);
+            userInDB.setPassword(passwordAuth.getNewPassword());
             userService.changePassword(userInDB);
             logger.info("密码修改成功");
             return new ResultVo(ResultCode.SUCCESS);
@@ -114,7 +117,7 @@ public class UserController {
     public Object changeName(@RequestParam String newUsername){
         User user = JwtUtils.getUserBytoken();
        if (redisUtils.exists(newUsername) || userService.findByName(newUsername) != null){
-            return new ResultVo(ResultCode.BAD_REQUEST,"用户名重复");
+           throw new BadException(ResultCode.BAD_REQUEST);
         } else {
             redisUtils.remove(user.getUsername());
             user.setUsername(newUsername);

@@ -35,5 +35,7 @@ public interface NoteMapper {
 
     List<Note> getFavNotesAsc(Page<Note> page,Integer uId);
 
+    Note getNote(Integer nId,Integer uId);
 
+    List<Note> searcheNoteByTile(Page<Note> page, String title,Integer uId);
 }

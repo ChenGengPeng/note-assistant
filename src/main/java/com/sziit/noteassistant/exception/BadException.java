@@ -21,4 +21,5 @@ public class BadException extends RuntimeException{
     public void setResultCode(ResultCode resultCode) {
         this.resultCode = resultCode;
     }
+
 }
