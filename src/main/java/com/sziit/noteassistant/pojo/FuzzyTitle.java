@@ -18,5 +18,5 @@ public class FuzzyTitle {
     @ApiModelProperty(value = "标题")
     private String title;
     @ApiModelProperty(value = "页面id")
-    private Integer pageId;
+    private Integer page;
 }

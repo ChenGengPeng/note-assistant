@@ -6,12 +6,12 @@ import com.sziit.noteassistant.pojo.entity.User;
 import com.sziit.noteassistant.service.NoteService;
 import com.sziit.noteassistant.service.ShareService;
 import com.sziit.noteassistant.utils.JwtUtils;
-import com.sziit.noteassistant.utils.RedisUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,7 +32,7 @@ public class ShareController {
     private NoteService noteService;
 
     @Autowired
-    private RedisUtils redisUtils;
+    private RedisTemplate<String,Object> redisTemplate;
 
     @Autowired
     private ShareService shareService;
@@ -43,8 +43,15 @@ public class ShareController {
     public Object getShareKey(@RequestParam Integer nId) {
         User user = JwtUtils.getUserBytoken();
         Share share = null;
-        Object o = redisUtils.get(nId + "key");
+        String redisKey = nId+"Key";
+       if (redisTemplate.hasKey(redisKey)){
+           String shareKey = (String) redisTemplate.opsForValue().get(redisKey);
+           share.setShareId(shareKey);
+           share.setNId(nId);
+           return new ResultVo(share);
+       }
         share = shareService.getShareKey(nId);
+        redisTemplate.opsForValue().set(redisKey,share.getShareId());
         return new ResultVo(share);
     }
 

@@ -6,21 +6,18 @@ import com.sziit.noteassistant.pojo.Jwt;
 import com.sziit.noteassistant.pojo.entity.User;
 import com.sziit.noteassistant.service.UserService;
 import com.sziit.noteassistant.utils.JwtUtils;
-import com.sziit.noteassistant.utils.RedisUtils;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.SignatureException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.UnavailableException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -33,7 +30,7 @@ import java.util.Arrays;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
-    private RedisUtils redisUtils;
+    private RedisTemplate<String,Object> redisTemplate;
 
     @Autowired
     private UserService userService;
@@ -66,8 +63,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             logger.warn("couldn't not find bearer string , will ignore the header");
         }
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            if (redisUtils.exists(username)){
-                user.setUId((Integer) redisUtils.get(username));
+            if (redisTemplate.hasKey(username)){
+                user.setUId((Integer) redisTemplate.opsForValue().get(username));
                 user.setUsername(username);
             }else {
                 user = userService.findByName(username);

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.qiniu.common.QiniuException;
 import com.qiniu.common.Zone;
 import com.qiniu.http.Response;
+import com.qiniu.storage.BucketManager;
 import com.qiniu.storage.Configuration;
 import com.qiniu.storage.Region;
 import com.qiniu.storage.UploadManager;
@@ -12,19 +13,13 @@ import com.qiniu.storage.persistent.FileRecorder;
 import com.qiniu.util.*;
 import com.sziit.noteassistant.http.QiniuyunCode;
 import com.sziit.noteassistant.qiniuyun.QiniuyunUpload;
-import com.sziit.noteassistant.qiniuyun.RegionCode;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
+
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,65 +27,15 @@ import java.util.Map;
  * @author CGP 1577992659@qq.com
  */
 @Component
-public class QiniuyunUtil {
-
-    /*private static String accessKey;
-    @Value("${qiniuyun.accessKey}")
-    public static void setAccessKey(String accessKey){
-        QiniuyunUtil.accessKey = accessKey;
-    }
-    private static String secretKey;
-    @Value("${qiniuyun.secretKey}")
-    public static void setSecretKey(String secretKey){
-        QiniuyunUtil.secretKey = secretKey;
-    }
-    private static String bucket;
-    @Value("${qiniuyun.bucket}")
-    public static void setBucket(String bucket){
-        QiniuyunUtil.bucket = bucket;
-    }
-
-    private static String domain;
-    @Value("${qiniuyun.domain}")
-    public static void setDomain(String domain){
-        QiniuyunUtil.domain = domain;
-    }
-    private static RegionCode regionCode;
-    @Value("${qiniuyun.regionCode}")
-    public static void setRegionCode(RegionCode regionCode){
-        QiniuyunUtil.regionCode = regionCode;
-    }
-    //    QiniuyunUpload qiniuyunUpload = new QiniuyunUpload();
-//    private static RegionCode regionCode = qiniuyunUpload.getRegionCode();*/
+public class QiniuyunUtils {
 
     private static final String ACCESS_KEY = QiniuyunUpload.accessKey;
     private static final String SECRET_KEY = QiniuyunUpload.secretKey;
     private static final String BUCKET = QiniuyunUpload.bucket;
     private static final String DOMAIN = QiniuyunUpload.domain;
-    private static final RegionCode REGIONCODE = QiniuyunUpload.regionCode;
-    private static Region region = null;
+    private static final Region REGIONCODE = Region.region0();
 
     private static final Auth auth = Auth.create(ACCESS_KEY, SECRET_KEY);
-    static {
-        switch (REGIONCODE){
-            //华东
-            case region0:
-                region  = Region.region0();
-                //华北
-            case region1:
-                region  = Region.region1();
-                //华南
-            case region2:
-                region  = Region.region2();
-                //北美
-            case regionNa0:
-                region  = Region.regionNa0();
-                //东南亚
-            case regionAs0:
-                region  = Region.regionAs0();
-                break;
-        }
-    }
 
     /**
      *
@@ -102,7 +47,7 @@ public class QiniuyunUtil {
     /**
      * 上传管理对象
      */
-    private static UploadManager uploadManager = new UploadManager(new Configuration(region));
+    private static UploadManager uploadManager = new UploadManager(new Configuration(Zone.zone2()));
 
     /**
      * 本地上传
@@ -233,34 +178,46 @@ public class QiniuyunUtil {
         }
     }
     private static String intoResult(byte[] uploadBytes, File localFilePath, ByteArrayInputStream byteInputStream, String fileName, FileRecorder fileRecorder) throws QiniuException {
-        Configuration cfg = new Configuration(region);
+        Configuration cfg = new Configuration(Zone.zone2());
         UploadManager uploadManager = new UploadManager(cfg, fileRecorder);
 //        String substring = fileName.substring(fileName.lastIndexOf("."));
-        String key = "hlm/images/"+fileName;
         Auth auth = Auth.create(ACCESS_KEY, SECRET_KEY);
-        String upToken = auth.uploadToken(BUCKET);
+        String upToken = auth.uploadToken(BUCKET,fileName);
         Response response = null;
         try {
             if(uploadBytes != null && localFilePath == null && byteInputStream == null){
-                response = uploadManager.put(uploadBytes, key, upToken);
+                response = uploadManager.put(uploadBytes, fileName, upToken);
             }
             if(localFilePath != null && uploadBytes == null && byteInputStream == null){
-                response = uploadManager.put(localFilePath, key, upToken);
+                response = uploadManager.put(localFilePath, fileName, upToken);
             }
             if(byteInputStream != null  && uploadBytes == null && localFilePath == null){
-                response = uploadManager.put(byteInputStream,key,upToken,null, null);
+                response = uploadManager.put(byteInputStream,fileName,upToken,null, null);
             }
             if(response == null){
                 return "参数错误";
             }
             //解析上传成功的结果
             DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
+            response.close();
             return putRet.key;
         } catch (QiniuException ex) {
             Response r = ex.response;
             throw new QiniuException(r);
+        }finally {
+            if (response!= null){
+                response.close();
+            }
         }
     }
 
-
+    public static void delete(String key){
+        Configuration cfg = new Configuration(Zone.zone2());
+        BucketManager bucketManager = new BucketManager(auth,cfg);
+        try {
+            bucketManager.delete(BUCKET, key);
+        } catch (QiniuException e) {
+            e.printStackTrace();
+        }
+    }
 }

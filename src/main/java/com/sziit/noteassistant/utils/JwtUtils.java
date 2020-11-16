@@ -34,9 +34,6 @@ import java.util.function.Function;
 @Component
 public class JwtUtils implements Serializable {
 
-    @Autowired
-    private RedisUtils redisUtils;
-
     private static final String SECRET = Jwt.secret;
     @Value("${jwt.EXPIRATION_TIME}")
     private static final long EXPIRATION_TIME = 86400;
@@ -121,26 +118,29 @@ public class JwtUtils implements Serializable {
 
     /**
      * generate token for user
-     * @param user
+     * @param username
+     * @param phone
      * @return
      */
-    public String generateToken(User user){
-        return doGenerateToken(user.getUsername());
+    public String generateToken(String username,String phone){
+        return doGenerateToken(username,phone);
     }
 
     /**
-     *      //while creating the token -
-     *     //1. Define  claims of the token, like Issuer, Expiration, Subject, and the ID
-     *     //2. Sign the JWT using the HS512 algorithm and secret key.
-     *     //3. According to JWS Compact Serialization(https://tools.ietf.org/html/draft-ietf-jose-json-web-signature-41#section-3.1)
-     *     //   compaction of the JWT to a URL-safe string
-     *     iss(签发者), exp(过期时间), sub(面向用户), aud(接收方), iat(签发时间)等。
-     * @param subject
+     *   //while creating the token -
+     *      *     //1. Define  claims of the token, like Issuer, Expiration, Subject, and the ID
+     *      *     //2. Sign the JWT using the HS512 algorithm and secret key.
+     *      *     //3. According to JWS Compact Serialization(https://tools.ietf.org/html/draft-ietf-jose-json-web-signature-41#section-3.1)
+     *      *     //   compaction of the JWT to a URL-safe string
+     *      *     iss(签发者), exp(过期时间), sub(面向用户), aud(接收方), iat(签发时间)等。
+     * @param username
+     * @param phone
      * @return
      */
-    private String doGenerateToken(String subject) {
-        Claims claims = Jwts.claims().setSubject(subject);
+    private String doGenerateToken(String username,String phone) {
+        Claims claims = Jwts.claims().setSubject(username);
         claims.put("scopes", Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN")));
+        claims.put("phone",phone);
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(new Date(System.currentTimeMillis()))

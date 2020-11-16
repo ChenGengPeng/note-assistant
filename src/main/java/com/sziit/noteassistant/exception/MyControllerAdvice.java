@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
  * @author CGP 1577992659@qq.com
  * @date 2020/11/4  15:20
  */
-@RestControllerAdvice(annotations = RestController.class)
+//@RestControllerAdvice(annotations = RestController.class)
 public class MyControllerAdvice<T> {
 
     @ResponseStatus(HttpStatus.OK)
