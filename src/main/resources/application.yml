@@ -1,10 +1,9 @@
 qiniuyun:
-  ACCESS_KEY: bUppOaCX9aNaaehuZ0QdAG-cpci9B51jXT6XgMyr
-  SECRET_KEY: Mzm26CsGtTy-2-S0sNnn-xtput6hkB3mr9nBI6qI
-  BUCKET: note-assistant
-  DOMAIN: http://qiqx0hdt6.hn-bkt.clouddn.com/
-  REGIONCODE: region2
-  KEY: null
+  ACCESS_KEY:
+  SECRET_KEY:
+  BUCKET:
+  DOMAIN:
+  REGIONCODE:
 server:
   servlet:
     # 请求数据转码UTF8
@@ -34,7 +33,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/note_assistant?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf8&autoReconnect=true&allowMultiQueries=true
     username: root
-    password: 3412410
+    password:
   devtools:
     restart:
       #热部署生效
@@ -47,9 +46,6 @@ spring:
     basic:
       path: /swagger-ui.html
       enabled: false
-    user:
-      name: admin
-      password: 3412410
   # redis 配置
   redis:
     port: 6379
@@ -91,19 +87,8 @@ logging:
       example:
         security: debug
 jwt:
-  SECRET: (CGP:)_$^3412410^%$_(ZHJ:)_@@++--(ZZS:)_++++_.sds_(QGR:)
+  SECRET:
   EXPIRATION_TIME: 86400
   TOKEN_PREFIX: Bearer
   AUTHORIZATION: Authorization
 
-#sqlhelper:
-#  mybatis:
-#    instrumentor:
-#      cache-instrumented-sql: true
-#      subquery-paging-start-flag: "[PAGING_StART]"
-#      subquery-paging-end-flag: "[PAGING_END]"
-#    pagination:
-#      count: true
-#      default-page-size: 10
-#      use-last-page-if-page-no-out: true
-#      count-suffix: _COUNT
