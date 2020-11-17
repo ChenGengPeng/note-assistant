@@ -115,7 +115,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
+            <version>4.13.1</version>
             <scope>test</scope>
         </dependency>
 <!--        导入配置文件处理器，配置文件进行绑定就会有提示-->
